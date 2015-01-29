@@ -41,9 +41,9 @@ if DEBUG:
             'PASSWORD': 'Will0870',
             'HOST': 'EXERGOS-PC',
             'OPTIONS': {
-              'autocommit': True,
-            },
-        }
+                'autocommit': True,
+                },
+            }
     }
 
 else:
@@ -155,6 +155,8 @@ COMPRESS_PRECOMPILERS = (
 )
 
 STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     # other finders..
     # 'compressor.finders.CompressorFinder',
 )
