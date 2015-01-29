@@ -40,8 +40,8 @@
       <file leaf-file-name="settings.py" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/dodentocht/settings.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.7376033" vertical-offset="408" max-vertical-offset="3315">
-              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+            <state vertical-scroll-proportion="0.45661157" vertical-offset="0" max-vertical-offset="3332">
+              <caret line="13" column="42" selection-start-line="13" selection-start-column="42" selection-end-line="13" selection-end-column="42" />
               <folding />
             </state>
           </provider>
@@ -144,8 +144,8 @@
         <option value="$PROJECT_DIR$/static/css/style.css" />
         <option value="$PROJECT_DIR$/templates/index.html" />
         <option value="$PROJECT_DIR$/.env" />
-        <option value="$PROJECT_DIR$/dodentocht/settings.py" />
         <option value="$PROJECT_DIR$/dodentocht/wsgi.py" />
+        <option value="$PROJECT_DIR$/dodentocht/settings.py" />
       </list>
     </option>
   </component>
@@ -991,8 +991,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/dodentocht/settings.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.7376033" vertical-offset="408" max-vertical-offset="3315">
-          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+        <state vertical-scroll-proportion="0.45661157" vertical-offset="0" max-vertical-offset="3332">
+          <caret line="13" column="42" selection-start-line="13" selection-start-column="42" selection-end-line="13" selection-end-column="42" />
           <folding />
         </state>
       </provider>

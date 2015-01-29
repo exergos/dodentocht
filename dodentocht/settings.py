@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 if DEBUG:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -31,6 +31,7 @@ if DEBUG:
         ]
 
 else:
+    # HEROKU PRODUCTION
     # Static files (CSS, JavaScript, Images)
     # https://docs.djangoproject.com/en/1.7/howto/static-files/
 
