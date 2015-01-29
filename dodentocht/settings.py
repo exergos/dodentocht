@@ -156,7 +156,7 @@ COMPRESS_PRECOMPILERS = (
 
 STATICFILES_FINDERS = (
     # other finders..
-    'compressor.finders.CompressorFinder',
+    # 'compressor.finders.CompressorFinder',
 )
 
 
