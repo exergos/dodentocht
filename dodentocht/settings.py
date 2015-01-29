@@ -56,7 +56,7 @@ else:
     STATIC_URL = '/static/'
 
     STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'static'),
+        os.path.join(os.path.abspath(BASE_DIR), 'static'),
     )
     # Simplified static file serving.
     # https://warehouse.python.org/project/whitenoise/
@@ -149,10 +149,10 @@ TEMPLATE_DIRS = [
     ]
 
 # Include sass
-COMPRESS_PRECOMPILERS = (
-    ('text/scss', 'sass --scss {infile} {outfile}'),
-    ('text/x-scss', 'django_libsass.SassCompiler'),
-)
+# COMPRESS_PRECOMPILERS = (
+#     ('text/scss', 'sass --scss {infile} {outfile}'),
+#     ('text/x-scss', 'django_libsass.SassCompiler'),
+# )
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
@@ -160,8 +160,6 @@ STATICFILES_FINDERS = (
     # other finders..
     # 'compressor.finders.CompressorFinder',
 )
-
-
 
 # # In production
 # #Storage on S3 settings are stored as os.environs to keep settings.py clean
