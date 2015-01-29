@@ -141,6 +141,11 @@ STATICFILES_FINDERS = (
 
 # In production
 #Storage on S3 settings are stored as os.environs to keep settings.py clean
+# ENVIRONMENT VARIABLES ARE DECLARED IN HEROKU SHELL
+# heroku config:add AWS_ACCESS_KEY_ID=youraswsaccesskey
+# heroku config:add AWS_SECRET_ACCESS_KEY=yourawssecretkey
+# heroku config:add S3_BUCKET_NAME=yourbucketname
+
 # if not DEBUG:
 S3_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
 AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
