@@ -62,35 +62,35 @@ WSGI_APPLICATION = 'dodentocht.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'NAME': 'dodentocht',
-        'ENGINE': 'mysql.connector.django',
-        'USER': 'root',
-        'PASSWORD': 'Will0870',
-        'HOST': 'EXERGOS-PC',
-        'OPTIONS': {
-          'autocommit': True,
-        },
-    }
-}
-
-# CLEARDB_DATABASE_URL = "mysql://b21ac369402104:71a611ed@us-cdbr-iron-east-01.cleardb.net/heroku_a8c4b0cefde9e4f"
-#
 # DATABASES = {
 #     'default': {
-#         'NAME': 'heroku_a8c4b0cefde9e4f',
+#         'NAME': 'dodentocht',
 #         'ENGINE': 'mysql.connector.django',
-#         'USER': 'b21ac369402104',
-#         'PASSWORD': '71a611ed',
-#         'HOST': 'us-cdbr-iron-east-01.cleardb.net',
-#         # 'PORT' : '3306',
+#         'USER': 'root',
+#         'PASSWORD': 'Will0870',
+#         'HOST': 'EXERGOS-PC',
 #         'OPTIONS': {
 #           'autocommit': True,
-#           'connect_timeout': 20000,
 #         },
 #     }
 # }
+
+CLEARDB_DATABASE_URL = "mysql://b21ac369402104:71a611ed@us-cdbr-iron-east-01.cleardb.net/heroku_a8c4b0cefde9e4f"
+
+DATABASES = {
+    'default': {
+        'NAME': 'heroku_a8c4b0cefde9e4f',
+        'ENGINE': 'mysql.connector.django',
+        'USER': 'b21ac369402104',
+        'PASSWORD': '71a611ed',
+        'HOST': 'us-cdbr-iron-east-01.cleardb.net',
+        # 'PORT' : '3306',
+        'OPTIONS': {
+          'autocommit': True,
+          'connect_timeout': 20000,
+        },
+    }
+}
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.7/topics/i18n/
