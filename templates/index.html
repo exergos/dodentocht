@@ -1,0 +1,90 @@
+{#Load sass#}
+{% load compress %}
+{#Import static files (images/css/js/...):#}
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    {#This import jQuery#}
+    <script src="{% static "js/jQuery/jquery-1.11.1.min.js" %}"></script>
+    {#This import css file (static)#}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
+    {% endcompress %}
+    {#This import everything related to jQuery-UI#}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
+    <script src="{% static "js/jQuery-UI/jquery-ui.min.js" %}"></script>
+
+    <meta charset="UTF-8">
+
+    <title>Dodentocht App</title>
+    <script>
+        $(document).ready(function(){
+
+            $(window).resize(function(){
+                // First set width of form  = width of input box
+                $('.form-naam').width($('#id_your_name').outerWidth());
+
+                // Now produce css so that form is centered
+                $('.form-naam').css({
+                    position:'absolute',
+                    left: ($(window).width()
+                            - $('.form-naam').outerWidth())/2,
+                    top: ($(window).height()
+                            - $('.form-naam').outerHeight())/2
+                });
+
+            });
+
+            // To initially run the function:
+            $(window).resize();
+
+            // Add 3 attributes to input form (this eliminates need for label to ask for "name?")
+            $('#id_your_name').attr("value","Naam?");
+            $('#id_your_name').attr("onfocus","make_blank(this);");
+            $('#id_your_name').attr("onblur","restore_placeholder(this);");
+        });
+    </script>
+
+{#    Script om placeholder te creëren in text box die verdwijnt vanaf invullen naam#}
+    <script>
+        function make_blank (oInput)
+        {
+            if (!('placeholder' in oInput))
+                oInput.placeholder = oInput.value;
+            if (oInput.value != oInput.placeholder)
+                oInput.value = '';
+        }
+
+        function restore_placeholder (oInput)
+        {
+            if (oInput.value == '' && 'placeholder' in oInput)
+                oInput.value = 'Naam?';
+        }
+    </script>
+
+{#Initiate autocomplete for input box#}
+    <script>
+  $(function() {
+    var names = {{ names | safe }}
+    $( "#id_your_name" ).autocomplete({
+      source: names
+    });
+  });
+  </script>
+</head>
+
+<body>
+{#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
+{#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
+
+<form class="form-naam" action="/app_dodentocht/your-name/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+</form>
+
+</body>
+</html>

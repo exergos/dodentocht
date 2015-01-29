@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="2601177627">
+    <data-source source="LOCAL" name="Django default" uuid="9a5ac3ea-cd5b-4ec0-88d2-08a5d20bc116">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://us-cdbr-iron-east-01.cleardb.net/`heroku_a8c4b0cefde9e4f`</jdbc-url>
+      <user-name>b21ac369402104</user-name>
+      <user-password>df9ddf9bdfcbdf9cdf9bdf9bdfcfdfce</user-password>
+      <libraries />
+    </data-source>
+  </component>
+</project>
+
