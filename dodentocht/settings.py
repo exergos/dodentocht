@@ -10,7 +10,41 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
-BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+if DEBUG:
+    BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.7/howto/static-files/
+    STATIC_PATH = os.path.join(BASE_DIR, 'static')
+
+    # Define STATIC_ROOT for apps that compress all static files into 1
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+
+    STATIC_URL = '/static/'
+
+    STATICFILES_DIRS = [
+        STATIC_PATH,
+        ]
+
+else:
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.7/howto/static-files/
+
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    STATIC_ROOT = 'staticfiles'
+    STATIC_URL = '/static/'
+
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'static'),
+    )
+    # Simplified static file serving.
+    # https://warehouse.python.org/project/whitenoise/
+
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -18,8 +52,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '-(b79id^=!!x&!7x6ld3798+e5r6ny60o$_6lg3^i9q&)x+&8)'
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+
 
 TEMPLATE_DEBUG = True
 
@@ -139,17 +172,19 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
-# In production
-#Storage on S3 settings are stored as os.environs to keep settings.py clean
-# ENVIRONMENT VARIABLES ARE DECLARED IN HEROKU SHELL
-# heroku config:add AWS_ACCESS_KEY_ID=youraswsaccesskey
-# heroku config:add AWS_SECRET_ACCESS_KEY=yourawssecretkey
-# heroku config:add S3_BUCKET_NAME=yourbucketname
 
-# if not DEBUG:
-S3_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
-AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-S3_URL = 'http://%s.s3.amazonaws.com/' % S3_BUCKET_NAME
-STATIC_URL = S3_URL
+
+# # In production
+# #Storage on S3 settings are stored as os.environs to keep settings.py clean
+# # ENVIRONMENT VARIABLES ARE DECLARED IN HEROKU SHELL
+# # heroku config:add AWS_ACCESS_KEY_ID=youraswsaccesskey
+# # heroku config:add AWS_SECRET_ACCESS_KEY=yourawssecretkey
+# # heroku config:add S3_BUCKET_NAME=yourbucketname
+#
+# # if not DEBUG:
+# S3_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
+# AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
+# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
+# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+# S3_URL = 'http://%s.s3.amazonaws.com/' % S3_BUCKET_NAME
+# STATIC_URL = S3_URL
