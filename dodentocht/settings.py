@@ -42,6 +42,10 @@ INSTALLED_APPS = (
 
     # gunicorn, for heroku deployment
     "gunicorn",
+
+    # for amazon AWS connection
+    "storages",
+    "boto",
 )
 
 MIDDLEWARE_CLASSES = (
@@ -86,10 +90,10 @@ DATABASES = {
         'HOST': 'us-cdbr-iron-east-01.cleardb.net',
         # 'PORT' : '3306',
         'OPTIONS': {
-          'autocommit': True,
-          'connect_timeout': 20000,
-        },
-    }
+            'autocommit': True,
+            'connect_timeout': 20000,
+            },
+        }
 }
 
 # Internationalization
@@ -117,12 +121,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [
     STATIC_PATH,
-]
+    ]
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 TEMPLATE_DIRS = [
     TEMPLATE_PATH,
-]
+    ]
 
 # Include sass
 COMPRESS_PRECOMPILERS = (
@@ -136,5 +140,11 @@ STATICFILES_FINDERS = (
 )
 
 # In production
-
-STATIC_URL = 'http://dodentocht-static.s3.amazonaws.com/'
+#Storage on S3 settings are stored as os.environs to keep settings.py clean
+# if not DEBUG:
+AWS_STORAGE_BUCKET_NAME = os.environ['dodentocht-static']
+AWS_ACCESS_KEY_ID = os.environ['AKIAJSATTDIHX4AQHCGQ']
+AWS_SECRET_ACCESS_KEY = os.environ['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']
+STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
+S3_URL = 'http://%s.s3.amazonaws.com/' % AWS_STORAGE_BUCKET_NAME
+STATIC_URL = S3_URL
