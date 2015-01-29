@@ -137,4 +137,4 @@ STATICFILES_FINDERS = (
 
 # In production
 
-STATIC_URL = 'https://dodentocht-static.s3.eu-central-1.amazonaws.com/'
+STATIC_URL = 'dodentocht-static.s3-website.eu-central-1.amazonaws.com/'
