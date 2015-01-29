@@ -56,7 +56,7 @@ else:
     STATIC_URL = '/static/'
 
     STATICFILES_DIRS = (
-        os.path.join(os.path.abspath(BASE_DIR), 'static'),
+        os.path.join(os.path.dirname(BASE_DIR), 'static'),
     )
     # Simplified static file serving.
     # https://warehouse.python.org/project/whitenoise/
@@ -144,6 +144,7 @@ USE_L10N = True
 USE_TZ = True
 
 TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
+
 TEMPLATE_DIRS = [
     TEMPLATE_PATH,
     ]
