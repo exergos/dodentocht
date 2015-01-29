@@ -30,6 +30,11 @@ if DEBUG:
         STATIC_PATH,
         ]
 
+    TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
+
+    TEMPLATE_DIRS = [
+        TEMPLATE_PATH,
+        ]
     # Database
     # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
@@ -62,6 +67,12 @@ else:
     # https://warehouse.python.org/project/whitenoise/
 
     STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+    TEMPLATE_PATH = os.path.join(os.path.dirname(BASE_DIR), 'templates')
+
+    TEMPLATE_DIRS = [
+        TEMPLATE_PATH,
+        ]
 
     # Production database
     CLEARDB_DATABASE_URL = "mysql://b21ac369402104:71a611ed@us-cdbr-iron-east-01.cleardb.net/heroku_a8c4b0cefde9e4f"
@@ -142,12 +153,6 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
-
-TEMPLATE_DIRS = [
-    TEMPLATE_PATH,
-    ]
 
 # Include sass
 # COMPRESS_PRECOMPILERS = (
