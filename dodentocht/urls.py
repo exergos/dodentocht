@@ -7,5 +7,5 @@ urlpatterns = patterns('',
     # url(r'^blog/', include('blog.urls')),
 
     url(r'^admin', include(admin.site.urls)),
-    url(r'^app_dodentocht/', include('app_dodentocht.urls')), # ADD THIS NEW TUPLE!
+    url(r'^$', include('app_dodentocht.urls')), # ADD THIS NEW TUPLE!
 )
