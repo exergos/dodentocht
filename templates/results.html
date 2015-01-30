@@ -15,9 +15,12 @@
     <script src="{% static "js/jQuery-UI/jquery-ui.min.js" %}"></script>
 
 {#This import css file (static)#}
-{% compress css %}
-    <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
-{% endcompress %}
+
+    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+
+{#{% compress css %}#}
+{#    <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />#}
+{#{% endcompress %}#}
 {#Tablesorter to make table sortable via columns#}
 <script src="{% static "js/tablesorter.js/jquery.tablesorter.min.js" %}"></script>
 {#    Chart.js to make charts#}
