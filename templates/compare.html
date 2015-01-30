@@ -235,7 +235,7 @@
 <div>{{ header }} </div>
 
 {#Compare input box#}
-<form action="/app_dodentocht/your-name/compare/" method="post">
+<form action="/your-name/compare/" method="post">
     {% csrf_token %}
     {{ form_comp_other }}
     <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>

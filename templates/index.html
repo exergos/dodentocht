@@ -83,7 +83,7 @@
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
 
-<form class="form-naam" action="/app_dodentocht/your-name/" method="post">
+<form class="form-naam" action="/your-name/" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
