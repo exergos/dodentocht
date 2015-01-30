@@ -12,9 +12,10 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
+PRODUCTION = True
 
-if DEBUG:
+if not PRODUCTION:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
     # Static files (CSS, JavaScript, Images)
@@ -68,7 +69,7 @@ else:
 
     STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-    TEMPLATE_PATH = os.path.join(os.path.dirname(BASE_DIR), 'templates')
+    TEMPLATE_PATH = os.path.join(BASE_DIR0, 'templates')
 
     TEMPLATE_DIRS = [
         TEMPLATE_PATH,

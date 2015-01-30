@@ -10,8 +10,8 @@ https://docs.djangoproject.com/en/1.7/howto/deployment/wsgi/
 import os
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "dodentocht.settings")
 
-from dodentocht.settings import DEBUG
-if DEBUG:
+from dodentocht.settings import PRODUCTION
+if not PRODUCTION:
     from django.core.wsgi import get_wsgi_application
     application = get_wsgi_application()
 else:
