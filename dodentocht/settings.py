@@ -69,7 +69,7 @@ else:
 
     STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
-    TEMPLATE_PATH = os.path.join(BASE_DIR0, 'templates')
+    TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates')
 
     TEMPLATE_DIRS = [
         TEMPLATE_PATH,
