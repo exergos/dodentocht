@@ -19,7 +19,7 @@
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
         {% endcompress %}
     {% else %}
-        In production use regular css
+{#        In production use regular css#}
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     {% endif %}
 
@@ -94,7 +94,7 @@
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
 
-<form class="form-naam" action="{% url "urls.results" your_name %}" method="post">
+<form class="form-naam" action="/your-name/" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
