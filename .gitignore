@@ -1,0 +1,2 @@
+# Ignore CACHE folder and everything in it, because it messes with style.css availability
+static/CACHE/*
