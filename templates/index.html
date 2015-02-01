@@ -14,7 +14,7 @@
 
     {#This import css file (static)#}
     {% if DEBUG %}
-        {# In DEBUG mode use sass   #}
+{#        In DEBUG mode use sass   #}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
         {% endcompress %}
@@ -22,10 +22,6 @@
 {#        In production use regular css#}
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     {% endif %}
-
-
-
-
 
     {#This import everything related to jQuery-UI#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
