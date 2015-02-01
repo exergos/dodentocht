@@ -61,6 +61,8 @@ if DEBUG:
         ('text/x-scss', 'django_libsass.SassCompiler'),
     )
 
+    ALLOWED_HOSTS = []
+
 else:
     # HEROKU PRODUCTION
     # Static files (CSS, JavaScript, Images)
@@ -107,6 +109,9 @@ else:
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     )
 
+    # Allow all host headers
+    ALLOWED_HOSTS = ['*']
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
@@ -124,7 +129,7 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     'app_dodentocht.context_processors.debug',
 )
 
-ALLOWED_HOSTS = []
+
 
 # Application definition
 
