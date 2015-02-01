@@ -13,9 +13,8 @@ import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-PRODUCTION = True
 
-if not PRODUCTION:
+if DEBUG:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
 
     # Static files (CSS, JavaScript, Images)
@@ -51,6 +50,16 @@ if not PRODUCTION:
                 },
             }
     }
+
+    STATICFILES_FINDERS = (
+    'compressor.finders.CompressorFinder',
+    )
+
+    # Include sass
+    COMPRESS_PRECOMPILERS = (
+        ('text/scss', 'sass --scss {infile} {outfile}'),
+        ('text/x-scss', 'django_libsass.SassCompiler'),
+    )
 
 else:
     # HEROKU PRODUCTION
@@ -93,6 +102,12 @@ else:
             }
     }
 
+    STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    )
+
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.7/howto/deployment/checklist/
 
@@ -103,8 +118,13 @@ SECRET_KEY = '-(b79id^=!!x&!7x6ld3798+e5r6ny60o$_6lg3^i9q&)x+&8)'
 
 TEMPLATE_DEBUG = True
 
-ALLOWED_HOSTS = []
+# If DEBUG is true, use sass, else, in production, use standard css
+TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.contrib.auth.context_processors.auth',
+    'app_dodentocht.context_processors.debug',
+)
 
+ALLOWED_HOSTS = []
 
 # Application definition
 
@@ -118,6 +138,7 @@ INSTALLED_APPS = (
     'app_dodentocht',
 
     # other apps
+    # compressor for sass
     "compressor",
 
     # gunicorn, for heroku deployment
@@ -154,31 +175,3 @@ USE_I18N = True
 USE_L10N = True
 
 USE_TZ = True
-
-# Include sass
-# COMPRESS_PRECOMPILERS = (
-#     ('text/scss', 'sass --scss {infile} {outfile}'),
-#     ('text/x-scss', 'django_libsass.SassCompiler'),
-# )
-
-STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    # other finders..
-    # 'compressor.finders.CompressorFinder',
-)
-
-# # In production
-# #Storage on S3 settings are stored as os.environs to keep settings.py clean
-# # ENVIRONMENT VARIABLES ARE DECLARED IN HEROKU SHELL
-# # heroku config:add AWS_ACCESS_KEY_ID=youraswsaccesskey
-# # heroku config:add AWS_SECRET_ACCESS_KEY=yourawssecretkey
-# # heroku config:add S3_BUCKET_NAME=yourbucketname
-#
-# # if not DEBUG:
-# S3_BUCKET_NAME = os.environ['S3_BUCKET_NAME']
-# AWS_ACCESS_KEY_ID = os.environ['AWS_ACCESS_KEY_ID']
-# AWS_SECRET_ACCESS_KEY = os.environ['AWS_SECRET_ACCESS_KEY']
-# STATICFILES_STORAGE = 'storages.backends.s3boto.S3BotoStorage'
-# S3_URL = 'http://%s.s3.amazonaws.com/' % S3_BUCKET_NAME
-# STATIC_URL = S3_URL

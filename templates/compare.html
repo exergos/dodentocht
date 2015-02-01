@@ -9,20 +9,22 @@
 <html>
 <head lang="en">
 {#    This makes sure css hover function works in IE#}
-    <meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
 {#This import jQuery#}
 <script src="{% static "js/jQuery/jquery-1.11.1.min.js" %}"></script>
 {#This import everything related to jQuery-UI (autocomplete and others)#}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
-    <script src="{% static "js/jQuery-UI/jquery-ui.min.js" %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
+<script src="{% static "js/jQuery-UI/jquery-ui.min.js" %}"></script>
 
 {#This import css file (static)#}
-
+{% if DEBUG %}
+    {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
+    {% endcompress %}
+{% else %}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+{% endif %}
 
-{#{% compress css %}#}
-{#    <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />#}
-{#{% endcompress %}#}
 {#Tablesorter to make table sortable via columns#}
 <script src="{% static "js/tablesorter.js/jquery.tablesorter.min.js" %}"></script>
 {#    Chart.js to make charts#}
@@ -69,7 +71,7 @@
 {#    Create Radar Chart#}
 <script>
     function createRadarchart(colors) {
-      var data = {
+        var data = {
             labels: {{ posts | safe }},
             datasets: [
                 {
@@ -128,7 +130,7 @@
             if (time_graph_ms[i] >= 1420066800) {
                 count_2015 = count_2015 + 1;
             }
-                        if (time_graph_comp_ms[i] >= 1420066800) {
+            if (time_graph_comp_ms[i] >= 1420066800) {
                 count_2015_comp = count_2015_comp + 1;
             }
         }
@@ -222,14 +224,14 @@
 
 
 {#Initiate autocomplete for input box#}
-    <script>
-  $(function() {
-    var names = {{ names | safe }}
-    $( "#id_your_name" ).autocomplete({
-      source: names
+<script>
+    $(function() {
+        var names = {{ names | safe }}
+                $( "#id_your_name" ).autocomplete({
+                    source: names
+                });
     });
-  });
-  </script>
+</script>
 <title>{{ header | get_at_index:1 }}</title>
 
 </head>

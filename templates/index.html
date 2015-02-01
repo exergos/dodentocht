@@ -7,16 +7,25 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
-{#    This makes sure css hover function works in IE#}
+    {#    This makes sure css hover function works in IE#}
     <meta http-equiv="X-UA-Compatible" content="IE=9"/>
     {#This import jQuery#}
     <script src="{% static "js/jQuery/jquery-1.11.1.min.js" %}"></script>
-    {#This import css file (static)#}
-{#    {% compress css %}#}
-{#        <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />#}
-{#    {% endcompress %}#}
 
+    {#This import css file (static)#}
+    {% if DEBUG %}
+        {# In DEBUG mode use sass   #}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
+        {% endcompress %}
+    {% else %}
+        In production use regular css
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    {% endif %}
+
+
+
+
 
     {#This import everything related to jQuery-UI#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
@@ -53,7 +62,7 @@
         });
     </script>
 
-{#    Script om placeholder te creëren in text box die verdwijnt vanaf invullen naam#}
+    {#    Script om placeholder te creëren in text box die verdwijnt vanaf invullen naam#}
     <script>
         function make_blank (oInput)
         {
@@ -70,22 +79,22 @@
         }
     </script>
 
-{#Initiate autocomplete for input box#}
+    {#Initiate autocomplete for input box#}
     <script>
-  $(function() {
-    var names = {{ names | safe }}
-    $( "#id_your_name" ).autocomplete({
-      source: names
-    });
-  });
-  </script>
+        $(function() {
+            var names = {{ names | safe }}
+                    $( "#id_your_name" ).autocomplete({
+                        source: names
+                    });
+        });
+    </script>
 </head>
 
 <body>
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
 
-<form class="form-naam" action="/your-name/" method="post">
+<form class="form-naam" action="{% url "urls.results" your_name %}" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
