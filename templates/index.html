@@ -13,17 +13,17 @@
     <script src="{% static "js/jQuery/jquery-1.11.1.min.js" %}"></script>
 
     {#This import css file (static)#}
-{#    <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />#}
-{#    {% if DEBUG %}#}
-{#        In DEBUG mode use sass   #}
-{#        {% compress css %}#}
-{#            <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />#}
-{#        {% endcompress %}#}
-{#    {% else %}#}
-{#        In production use regular css#}
-{#        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />#}
-{#    {% endif %}#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    {% if DEBUG %}
+{#        In DEBUG mode use sass   #}
+        {% compress css %}
+            <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
+        {% endcompress %}
+    {% else %}
+{#        In production use regular css#}
+        <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
+    {% endif %}
+
     {#This import everything related to jQuery-UI#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
     <script src="{% static "js/jQuery-UI/jquery-ui.min.js" %}"></script>

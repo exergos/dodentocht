@@ -126,6 +126,7 @@ TEMPLATE_DEBUG = True
 
 # If DEBUG is true, use sass, else, in production, use standard css
 TEMPLATE_CONTEXT_PROCESSORS = (
+    'django.core.context_processors.static',
     'django.contrib.auth.context_processors.auth',
     'app_dodentocht.context_processors.debug',
 )
