@@ -71,9 +71,6 @@ else:
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     # If collectstatic is used when uploading to heroku, use staticfiles root
     STATIC_ROOT = 'staticfiles'
-
-    # Otherwise use this static root
-    STATIC_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'static')
     STATIC_URL = '/static/'
 
     STATICFILES_DIRS = (
