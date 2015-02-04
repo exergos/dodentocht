@@ -9,6 +9,7 @@ html {
 
 body {
   text-align: center;
+  visibility: hidden;
 }
 
 .container {
