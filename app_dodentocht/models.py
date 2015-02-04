@@ -87,3 +87,4 @@ class requests(models.Model):
     ip_address = models.IPAddressField()
     pub_date = models.DateTimeField()
     name_requested = models.TextField(default='')
+    comp = models.IntegerField(default=0)

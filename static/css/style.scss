@@ -1,22 +1,22 @@
 /*Define sass variables*/
 
-$neutral-color: rgba(214, 213, 213, 0.6);
-$your_name_color: rgba(130, 201, 119, 0.6);
-$comp_name_color: rgba(110, 177, 210, 0.6);
+$neutral-color: rgba(214, 213, 213, 0.9);
+$your_name_color: rgba(130, 201, 119, 0.9);
+$comp_name_color: rgba(110, 177, 210, 0.9);
+$white: rgba(255, 255, 255, 0.9);
+$font-family: monospace, monospace;
 
 html {
-    /*background: url('../images/dodentocht_background.jpg')  no-repeat center center fixed;*/
+  background: url('../images/dodentocht_background.jpg')  no-repeat center center fixed;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
-
 }
 
 body {
     text-align: center;
 }
-
 
 .container {
     margin: 0 auto;
@@ -42,13 +42,13 @@ input { font-size:16px;
     border-width:2px;
     border-color:#cccccc;
     padding:2px;
-    background-color:#9dcccc;
+    background-color:$your_name_color;
     border-style:solid;
     border-radius:0px;
     box-shadow: 0px 0px 0px 0px rgba(42,42,42,.0);
     text-shadow:0px 0px 0px rgba(42,42,42,.75);
     font-weight:normal; font-style:none;
-    font-family:monospace;
+    font-family: $font-family;
     text-align: center;
     margin-left: auto;
     margin-right: auto;
@@ -56,14 +56,22 @@ input { font-size:16px;
 
 input:focus { outline:none; }
 
+
+#id_your_name_1 {
+  background-color: $your_name_color;
+}
+
+#id_your_name_2 {
+  background-color: $comp_name_color;
+}
 /*#dodentocht_table Style - This is what you want*/
 /*------------------------------------------------------------------ */
 #dodentocht_table {
     /*Font*/
-    font-family:Arial, Helvetica, sans-serif;
+    font-family: $font-family;
 
     /*Color of header text*/
-    color:#FFFFFF;
+    color:#000000;
 
     /*Color of table text*/
     font-size:12px;
@@ -82,8 +90,9 @@ input:focus { outline:none; }
 }
 
 #dodentocht_table th {
+
     /*Color of header text*/
-    color:#FFFFFF;
+    color:#000000;
     font-size:13px;
 
     padding:10px 10px 10px 10px;
@@ -122,6 +131,18 @@ tr:hover td.neutral{
     background: -moz-linear-gradient(top, $neutral_color,  $neutral_color);
 }
 
+td.neutral {
+  background: $white;
+}
+
+td.your_name {
+  background: $white;
+}
+
+td.comp_name {
+  background: $white;
+}
+
 #dodentocht_table th:first-child{
     text-align: center;
     padding-left:20px;
@@ -151,6 +172,7 @@ tr:hover td.neutral{
 }
 #dodentocht_table tr td {
     /*border-top: 1px solid #478873;*/
+
     border-bottom:1px solid #478873;
     /*border-left: 1px solid #478873;*/
 
@@ -176,17 +198,17 @@ tr:hover td.neutral{
     -webkit-border-bottom-right-radius:3px;
     border-bottom-right-radius:3px;
 }
-/*#dodentocht_table tr:hover td:neutral{*/
-    /*background: -webkit-gradient(linear, left top, left bottom, from(#de0c56), to(#de0c56));*/
-    /*background: -moz-linear-gradient(top, #de0c56,  #de0c56);*/
-/*}*/
 
-/*#dodentocht_table tr:hover td:your_name{*/
-    /*background: -webkit-gradient(linear, left top, left bottom, from($your_name_color), to($your_name_color));*/
-    /*background: -moz-linear-gradient(top, $your_name_color,  $your_name_color);*/
-/*}*/
+#header_table td {
+  background: $white;
+  font-family: $font-family;
+  font-size: 12px;
+}
 
-/*#dodentocht_table tr:hover td:comp_name{*/
-    /*background: -webkit-gradient(linear, left top, left bottom, from($comp_name_color), to($comp_name_color));*/
-    /*background: -moz-linear-gradient(top, $comp_name_color,  $comp_name_color);*/
-/*}*/
+#radar_chart_wrapper {
+  background: $white;
+}
+
+#line_chart_wrapper {
+  background: $white;
+}

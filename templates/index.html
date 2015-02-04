@@ -81,7 +81,8 @@
         $(function() {
             var names = {{ names | safe }}
                     $( "#id_your_name" ).autocomplete({
-                        source: names
+                        source: names,
+                        minLength: 4
                     });
         });
     </script>

@@ -65,12 +65,54 @@
         // Slow, can be fixed by writing better prepared data into database
         // For example: don't write numbers, but write varchar to database
         javascript_table();
+
+        // Center wrapper div vertically
+        javascript_wrapper();
+
+        fill_header_table();
+
+        // Add 3 attributes to input form (this eliminates need for label to ask for "name?")
+        $('#id_your_name_1').attr("value","{{ header |get_at_index:1 }}");
+        $('#id_your_name_1').attr("onfocus","make_blank(this);");
+        $('#id_your_name_1').attr("onblur","restore_placeholder_your_name(this);");
+
+        $('#id_your_name_2').attr("value","{{ header |get_at_index:3 }}");
+        $('#id_your_name_2').attr("onfocus","make_blank(this);");
+        $('#id_your_name_2').attr("onblur","restore_placeholder_comp(this);");
     });
+</script>
+
+{#    Script om placeholder te creëren in text box die verdwijnt vanaf invullen naam#}
+<script>
+    function make_blank (oInput)
+    {
+        if (!('placeholder' in oInput))
+            oInput.placeholder = oInput.value;
+        if (oInput.value != oInput.placeholder)
+            oInput.value = '';
+    }
+
+    function restore_placeholder_your_name (oInput)
+    {
+        if (oInput.value == '' && 'placeholder' in oInput)
+            oInput.value = "{{ header |get_at_index:1 }}";
+    }
+
+    function restore_placeholder_comp (oInput)
+    {
+        if (oInput.value == '' && 'placeholder' in oInput)
+            oInput.value = "{{ header |get_at_index:3 }}";
+    }
 </script>
 
 {#    Create Radar Chart#}
 <script>
     function createRadarchart(colors) {
+        var scaleSteps = 10;
+        var scaleStartValue = 0;
+        var speedMax = Math.max.apply(Math,{{ speed | safe }});
+        var speed_avg_Max = Math.max.apply(Math,{{ speed_comp | safe }});
+        var scaleStepWidth = Math.ceil((Math.max(speedMax,speed_avg_Max)/scaleSteps)*10)/10;
         var data = {
             labels: {{ posts | safe }},
             datasets: [
@@ -100,7 +142,36 @@
 
         var options = {
             {#                Go from unix millisecond value back to string, using moment.js.js#}
-            multiTooltipTemplate: "<%=value + ' km/u'%>"
+            multiTooltipTemplate: "<%=value + ' km/u'%>",
+            {#            make scale#}
+            scaleOverride: true,
+            scaleSteps: scaleSteps,
+            scaleStepWidth: scaleStepWidth,
+            scaleStartValue: scaleStartValue,
+
+            {#            Font#}
+            {#            scaleFontFamily: "'monospace'",#}
+            //String - Point label font declaration
+            pointLabelFontFamily : "'monospace',monospace",
+
+            //String - Point label font weight
+            pointLabelFontStyle : "normal",
+
+            //Number - Point label font size in pixels
+            pointLabelFontSize : 12,
+
+            //String - Point label font colour
+            pointLabelFontColor : "#000",
+
+                        tooltipFontFamily: "'monospace',monospace",
+            tooltipFontSize: 12,
+            tooltipFontStyle: "normal",
+            tooltipFontColor: "#fff",
+
+            tooltipTitleFontFamily: "'monospace',monospace",
+            tooltipTitleFontSize: 14,
+            tooltipTitleFontStyle: "normal",
+            tooltipTitleFontColor: "#fff"
         };
 
         var ctx = document.getElementById("radar_chart").getContext("2d");
@@ -174,7 +245,21 @@
             scaleLabel: "<%=moment.unix(value).startOf('hour').format('HH:mm')%>",
 
             // On the tooltips, give hours and minutes
-            multiTooltipTemplate: "<%=moment.unix(value).format('HH:mm')%>"
+            multiTooltipTemplate: "<%=moment.unix(value).format('HH:mm')%>",
+            scaleFontFamily: "'monospace',monospace",
+            scaleFontStyle: "normal",
+            scaleFontColor: "#000",
+            scaleFontSize: 12,
+
+            tooltipFontFamily: "'monospace',monospace",
+            tooltipFontSize: 12,
+            tooltipFontStyle: "normal",
+            tooltipFontColor: "#fff",
+
+            tooltipTitleFontFamily: "'monospace',monospace",
+            tooltipTitleFontSize: 14,
+            tooltipTitleFontStyle: "normal",
+            tooltipTitleFontColor: "#fff"
         };
         var ctx = document.getElementById("line_chart").getContext("2d");
         var myLineChart = new Chart(ctx).Line(data,options);
@@ -216,19 +301,94 @@
             }
         });
 
+{#        Als deelnemer niet aangekomen, zet "-" in tabel bovenaan#}
+        if ({{ header | get_at_index:2 }} > {{ header | get_at_index:6 }} ) {
+               $('#your_name_table tr:eq(0) td:eq(1)').html('-')
+            }
+        if ({{ header | get_at_index:4 }} > {{ header | get_at_index:6 }} ) {
+               $('#comp_table tr:eq(0) td:eq(1)').html('-')
+            }
 
-        // Check if speed is 0.0, change to -
+        {#        Zet header_table op juist plaats#}
+        // Set header wrapper in middle of page
+        $("#header_wrapper").width($("#your_name_wrapper").width() +$("#comp_wrapper").width());
+        $("#header_wrapper").height($("#your_name_wrapper").height());
+        var margin_left = ($(window).width() -$("#header_wrapper").width())/2;
+        $("#header_wrapper").css('margin-left',margin_left);
+
+        // Set width of 2 td's equal to input boxes
+        $("#td_your_name").outerWidth($("#your_name_wrapper").width());
+        $("#td_comp").outerWidth($("#comp_wrapper").width());
+
+        // Calculate margin to the right
+        var header_table_width = $("#header_table").outerWidth();
+        var margin_right = ($(window).width() -$("#your_name_wrapper").width()- $("#comp_wrapper").width())/2;
+        var margin_left = $(window).width() - header_table_width - margin_right;
+
+        // Set margin left of table
+        $('#header_table').css('margin-left',margin_left);
     }
 
 </script>
 
+{#Make wrapper div centralize vertically#}
+<script>
+    function javascript_wrapper() {
+       // Centralize table vertically
+       var margin_top = ($(window).height() - $("#wrapper").height())/2 - $("#header_wrapper").height() - $("#header_table").height();
+       $('#wrapper').css('margin-top', margin_top);
+    }
+
+</script>
+
+{#Fill header table#}
+<script>
+    function fill_header_table() {
+        {#        Als deelnemer niet aangekomen, zet "-" in tabel bovenaan#}
+        if ({{ header | get_at_index:2 }} > {{ header | get_at_index:6 }} ) {
+            $('#td_your_name').html("-/{{ header | get_at_index:5 }}");
+            $('#td_your_name_2').html("-/{{ header | get_at_index:6 }}");
+        }
+    else {
+            var all_perc = parseInt({{ header | get_at_index:2 }})/parseInt({{ header | get_at_index:5 }});
+            var aang_perc = parseInt({{ header | get_at_index:2 }})/parseInt({{ header | get_at_index:6 }});
+
+            var all_str = "{{ header | get_at_index:2 }}/{{ header | get_at_index:5 }}" + " (" + String(Math.round(1000*all_perc)/10) + "%)";
+            var aang_str = "{{ header | get_at_index:2 }}/{{ header | get_at_index:6 }}" + " (" + String(Math.round(1000*aang_perc)/10) + "%)";
+            $('#td_your_name').html(all_str);
+            $('#td_your_name_2').html(aang_str);
+        }
+
+                {#        Als deelnemer niet aangekomen, zet "-" in tabel bovenaan#}
+        if ({{ header | get_at_index:4 }} > {{ header | get_at_index:6 }} ) {
+            $('#td_comp').html("-/{{ header | get_at_index:5 }}");
+            $('#td_comp_2').html("-/{{ header | get_at_index:6 }}");
+        }
+    else {
+            var all_perc = parseInt({{ header | get_at_index:4 }})/parseInt({{ header | get_at_index:5 }});
+            var aang_perc = parseInt({{ header | get_at_index:4 }})/parseInt({{ header | get_at_index:6 }});
+
+            var all_str = "{{ header | get_at_index:4 }}/{{ header | get_at_index:5 }}" + " (" + String(Math.round(1000*all_perc)/10) + "%)";
+            var aang_str = "{{ header | get_at_index:4 }}/{{ header | get_at_index:6 }}" + " (" + String(Math.round(1000*aang_perc)/10) + "%)";
+            $('#td_comp').html(all_str);
+            $('#td_comp_2').html(aang_str);
+        }
+
+    }
+</script>
 
 {#Initiate autocomplete for input box#}
 <script>
     $(function() {
         var names = {{ names | safe }}
-                $( "#id_your_name" ).autocomplete({
-                    source: names
+                $( "#id_your_name_1" ).autocomplete({
+                    source: names,
+                    minLength: 4
+                });
+
+        $( "#id_your_name_2" ).autocomplete({
+                    source: names,
+                    minLength: 4
                 });
     });
 </script>
@@ -236,14 +396,40 @@
 
 </head>
 <body>
-<div>{{ header }} </div>
 
-{#Compare input box#}
-<form action="/your-name/compare/" method="post">
-    {% csrf_token %}
-    {{ form_comp_other }}
-    <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
-</form>
+<div id="header_wrapper">
+    <div id="your_name_wrapper" style="float:left">
+        <form id="form_your_name" action="/your-name/compare/" method="post">
+            {% csrf_token %}
+            {{ form_yourname.as_table }}
+            <input type="submit" name="Change yourname" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+        </form>
+    </div>
+
+
+    <div id="comp_wrapper" style="float:left">
+        <form id="form_your_name" action="/your-name/compare/" method="post">
+            {% csrf_token %}
+            {{ form_comp.as_table }}
+            <input type="submit" name="Change comp" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+        </form>
+    </div>
+</div>
+
+<table id="header_table" cellspacing="0" cellpadding="0">
+    <tbody>
+    <tr>
+{#        <td id="td_category">Eindpositie</td>#}
+        <td id="td_your_name">{{ header | get_at_index:2 }}/{{ header | get_at_index:5 }}  %</td>
+        <td id="td_comp">{{ header | get_at_index:4 }}/{{ header | get_at_index:5 }}  %</td>
+    </tr>
+    <tr>
+{#        <td>Eindpositie Aangekomen</td>#}
+        <td id="td_your_name_2">{{ header | get_at_index:2 }}/{{ header | get_at_index:6 }}  %</td>
+        <td id="td_comp_2">{{ header | get_at_index:4 }}/{{ header | get_at_index:6 }}  %</td>
+    </tr>
+    </tbody>
+</table>
 
 <div id="wrapper" class="container">
     <div id="table_wrapper" class="left">
@@ -280,11 +466,11 @@
     </div>
     <div id="radar_chart_wrapper" class="center">
         {#Radar Chart#}
-        <canvas id="radar_chart" width ="400" height="400"></canvas>
+        <canvas id="radar_chart" width ="400" height="341"></canvas>
     </div>
     <div id="line_chart_wrapper" class="right">
         {#Line Chart#}
-        <canvas id="line_chart" width ="400" height="400"></canvas>
+        <canvas id="line_chart" width ="400" height="341"></canvas>
     </div>
     {#To make sure div wrapper has correct height#}
     <div style='clear: both'></div>

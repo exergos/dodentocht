@@ -100,6 +100,10 @@ def results(request):
         your_name = form.cleaned_data['your_name']
         get_status.name_requested = your_name
 
+        # 4. Comp or not?
+        comp = 0
+        get_status.comp = comp
+
         # Save
         get_status.save()
         ###########################################
@@ -116,22 +120,94 @@ def results(request):
     # add names to context_dict
     context_dict["names"] =  names
 
-    # create an empty compare form
-    form_comp = forms.NameForm()
+    # create empty forms
+    form_yourname = forms.NameForm(auto_id='id_%s_1')
+    form_comp = forms.NameForm(auto_id='id_%s_2')
 
     # add form_comp to context_dict
+    context_dict['form_yourname'] = form_yourname
     context_dict['form_comp'] = form_comp
 
     return render(request, 'results.html' , context_dict)
 
 def compare(request):
     # create a form instance and populate it with data from the request:
-    form_comp = forms.NameForm(request.POST)
+    form = forms.NameForm(request.POST)
 
     # check whether it's valid:
-    if form_comp.is_valid():
-        # Now compare with new request (instead of average)
-        context_dict = dodentocht_query(form_comp,"compare")
+    if form.is_valid():
+        if 'Change comp' in request.POST:
+            # Save it to requests
+            ##########################################
+            # Store requested participant in database
+            # Create model to write to database:
+            get_status = requests() #imported class from model
+            # 1. IP Address
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip_address = x_forwarded_for.split(',')[-1].strip()
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            get_status.ip_address= ip_address
+
+            # 2. Date
+            # Create localization
+            brussels = pytz.timezone("Europe/Brussels")
+            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
+
+            # 3. Requested name
+            comp_name = form.cleaned_data['your_name']
+            get_status.name_requested = comp_name
+
+            # 4. Comp or not?
+            comp = 1
+            get_status.comp = comp
+
+            # Save
+            get_status.save()
+            ###########################################
+
+            # Now compare with new request (instead of average)
+            context_dict = dodentocht_query(form,"compare")
+
+
+        if 'Change yourname' in request.POST:
+            # Save it to requests
+            ##########################################
+            # Store requested participant in database
+            # Create model to write to database:
+            get_status = requests() #imported class from model
+            # 1. IP Address
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip_address = x_forwarded_for.split(',')[-1].strip()
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            get_status.ip_address= ip_address
+
+            # 2. Date
+            # Create localization
+            brussels = pytz.timezone("Europe/Brussels")
+            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
+
+            # 3. Requested name
+            comp_name = form.cleaned_data['your_name']
+            get_status.name_requested = comp_name
+
+            # 4. Comp or not?
+            comp = 0
+            get_status.comp = comp
+
+            # Save
+            get_status.save()
+            ###########################################
+
+            # Now compare with new request
+            try:
+                comp_name = requests.objects.filter(comp__exact=1).latest("pub_date").name_requested
+                context_dict = dodentocht_query(form,"compare")
+            except requests.DoesNotExist:
+                context_dict = dodentocht_query(form,"average")
 
     # Get names from database to use autocomplete:
     your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
@@ -139,12 +215,13 @@ def compare(request):
     for i in range(len(your_name_db_namen)):
         names.append(your_name_db_namen[i][0])
 
-    # add names to context_dict
-    context_dict["names"] =  names
+     # create empty forms
+    form_yourname = forms.NameForm(auto_id='id_%s_1')
+    form_comp = forms.NameForm(auto_id='id_%s_2')
 
     # add form_comp to context_dict
-    form_comp_other = forms.NameForm()
-    context_dict['form_comp_other'] = form_comp_other
+    context_dict['form_yourname'] = form_yourname
+    context_dict['form_comp'] = form_comp
 
     return render(request, 'compare.html' , context_dict)
 
@@ -239,10 +316,11 @@ def dodentocht_query(form,compare_string):
     else:
         if compare_string == "compare":
             # Retain data from initially requested person (=latest by that IP Address)
-            your_name = requests.objects.latest("pub_date").name_requested
-            
-            # Get name from form
-            comp_name = form.cleaned_data['your_name']
+            your_name = requests.objects.filter(comp__exact=0).latest("pub_date").name_requested
+            comp_name = requests.objects.filter(comp__exact=1).latest("pub_date").name_requested
+
+            # # Get name from form
+            # comp_name = form.cleaned_data['your_name']
             
             # Lookup in database
             your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")

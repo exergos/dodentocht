@@ -51,8 +51,23 @@ if DEBUG:
             }
     }
 
+    # DATABASES = {
+    #     'default': {
+    #         'NAME': 'heroku_a8c4b0cefde9e4f',
+    #         'ENGINE': 'mysql.connector.django',
+    #         'USER': 'b21ac369402104',
+    #         'PASSWORD': '71a611ed',
+    #         'HOST': 'us-cdbr-iron-east-01.cleardb.net',
+    #         # 'PORT' : '3306',
+    #         'OPTIONS': {
+    #             'autocommit': True,
+    #             'connect_timeout': 20000,
+    #             },
+    #         }
+    # }
+
     STATICFILES_FINDERS = (
-    'compressor.finders.CompressorFinder',
+        'compressor.finders.CompressorFinder',
     )
 
     # Include sass
@@ -106,8 +121,8 @@ else:
     }
 
     STATICFILES_FINDERS = (
-    'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+        'django.contrib.staticfiles.finders.FileSystemFinder',
+        'django.contrib.staticfiles.finders.AppDirectoriesFinder',
     )
 
     # Allow all host headers
@@ -119,8 +134,6 @@ else:
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '-(b79id^=!!x&!7x6ld3798+e5r6ny60o$_6lg3^i9q&)x+&8)'
-
-
 
 TEMPLATE_DEBUG = True
 
