@@ -375,13 +375,16 @@
 {#Loading signal script#}
 <script>
     function loading() {
-        $("#header_wrapper").css("display","none");
         $("#header_table").css("display","none");
         $("#wrapper").css("display","none");
         $('#loading').css("display","block");
 
-        // Vertically centralize
-        var margin_top = ($(window).height()-$('#loading').height())/2;
+
+        // Keep header wrapper on top
+        $('#header_wrapper').css("margin-top",0);
+
+        // Vertically centralize loading gif
+        var margin_top = ($(window).height()-$('#loading').height())/2 - $("#header_wrapper").height();
         $('#loading').css("margin-top",margin_top);
 
     }
@@ -392,7 +395,7 @@
 </head>
 <body>
 
-<div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
+
 <div id="header_wrapper">
     <div id="your_name_wrapper" style="float:left">
         <form id="form_your_name" action="/your-name/compare/" method="post" onsubmit="loading()">
@@ -471,6 +474,9 @@
     {#To make sure div wrapper has correct height#}
     <div style='clear: both'></div>
 </div>
+
+{#On bottom of page because input must stay visible and on same position#}
+<div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
 </body>
 </html>
 
