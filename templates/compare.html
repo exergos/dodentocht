@@ -392,14 +392,30 @@
                 });
     });
 </script>
+
+{#Loading signal script#}
+<script>
+    function loading() {
+        $("#header_wrapper").css("display","none");
+        $("#header_table").css("display","none");
+        $("#wrapper").css("display","none");
+        $('#loading').css("display","block");
+
+        // Vertically centralize
+        var margin_top = ($(window).height()-$('#loading').height())/2;
+        $('#loading').css("margin-top",margin_top);
+
+    }
+</script>
 <title>{{ header | get_at_index:1 }}</title>
 
 </head>
 <body>
+<div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
 
 <div id="header_wrapper">
     <div id="your_name_wrapper" style="float:left">
-        <form id="form_your_name" action="/your-name/compare/" method="post">
+        <form id="form_your_name" action="/your-name/compare/" method="post" onsubmit="loading()">
             {% csrf_token %}
             {{ form_yourname.as_table }}
             <input type="submit" name="Change yourname" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
@@ -408,7 +424,7 @@
 
 
     <div id="comp_wrapper" style="float:left">
-        <form id="form_your_name" action="/your-name/compare/" method="post">
+        <form id="form_your_name" action="/your-name/compare/" method="post" onsubmit="loading()">
             {% csrf_token %}
             {{ form_comp.as_table }}
             <input type="submit" name="Change comp" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
@@ -475,7 +491,6 @@
     {#To make sure div wrapper has correct height#}
     <div style='clear: both'></div>
 </div>
-
 </body>
 </html>
 

@@ -109,7 +109,7 @@ def results(request):
         ###########################################
 
         # Process request
-        context_dict = dodentocht_query(form,'average')
+        context_dict = dodentocht_query(form,ip_address,'average')
 
     # Get names from database to use autocomplete:
     your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
@@ -168,7 +168,7 @@ def compare(request):
             ###########################################
 
             # Now compare with new request (instead of average)
-            context_dict = dodentocht_query(form,"compare")
+            context_dict = dodentocht_query(form,ip_address,"compare")
 
 
         if 'Change yourname' in request.POST:
@@ -205,9 +205,9 @@ def compare(request):
             # Now compare with new request
             try:
                 comp_name = requests.objects.filter(comp__exact=1).latest("pub_date").name_requested
-                context_dict = dodentocht_query(form,"compare")
+                context_dict = dodentocht_query(form,ip_address,"compare")
             except requests.DoesNotExist:
-                context_dict = dodentocht_query(form,"average")
+                context_dict = dodentocht_query(form,ip_address,"average")
 
     # Get names from database to use autocomplete:
     your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
@@ -225,7 +225,7 @@ def compare(request):
 
     return render(request, 'compare.html' , context_dict)
 
-def dodentocht_query(form,compare_string):
+def dodentocht_query(form,ip_address, compare_string):
     if compare_string == 'average':
         # process the data in form.cleaned_data as required
         your_name = form.cleaned_data['your_name']
@@ -316,8 +316,8 @@ def dodentocht_query(form,compare_string):
     else:
         if compare_string == "compare":
             # Retain data from initially requested person (=latest by that IP Address)
-            your_name = requests.objects.filter(comp__exact=0).latest("pub_date").name_requested
-            comp_name = requests.objects.filter(comp__exact=1).latest("pub_date").name_requested
+            your_name = requests.objects.filter(comp__exact=0).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
+            comp_name = requests.objects.filter(comp__exact=1).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
 
             # # Get name from form
             # comp_name = form.cleaned_data['your_name']
@@ -404,6 +404,4 @@ def dodentocht_query(form,compare_string):
             time_graph_comp = json.dumps(time_graph_comp, cls=DateTimeEncoder)
     
             context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp, 'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'table' : table, 'names' : names}
-
-
     return context_dict

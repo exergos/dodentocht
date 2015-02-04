@@ -56,6 +56,8 @@
             $('#id_your_name').attr("value","Naam?");
             $('#id_your_name').attr("onfocus","make_blank(this);");
             $('#id_your_name').attr("onblur","restore_placeholder(this);");
+
+
         });
     </script>
 
@@ -86,17 +88,30 @@
                     });
         });
     </script>
+
+{#Loading signal script#}
+<script>
+    function loading() {
+        $('#input_form').css("display","none");
+        $('#loading').css("display","block");
+
+        // Vertically centralize
+        var margin_top = ($(window).height()-$('#loading').height())/2;
+        $('#loading').css("margin-top",margin_top);
+
+    }
+</script>
 </head>
 
 <body>
+
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
-
-<form class="form-naam" action="/your-name/" method="post">
+<div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
+<form id ="input_form" class="form-naam" action="/your-name/" onsubmit="loading()" method="post">
     {% csrf_token %}
     {{ form }}
     <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 </form>
-
 </body>
 </html>
