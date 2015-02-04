@@ -35,6 +35,10 @@
 <meta charset="UTF-8">
 
 <script type="text/javascript">
+        $(window).load(function() {
+  // When the page has loaded
+  $("body").css("visibility",'visible')
+});
     {#On document ready, load stuff#}
     $(document).ready(function(){
         $("#dodentocht_table").tablesorter({
@@ -411,12 +415,12 @@
 <table id="header_table" cellspacing="0" cellpadding="0">
     <tbody>
     <tr>
-{#        <td id="td_category">Eindpositie</td>#}
+        {#        <td id="td_category">Eindpositie</td>#}
         <td id="td_your_name"></td>
         <td id="td_comp">-</td>
     </tr>
     <tr>
-{#        <td>Eindpositie Aangekomen</td>#}
+        {#        <td>Eindpositie Aangekomen</td>#}
         <td id="td_your_name_2"></td>
         <td id="td_comp_2">-</td>
     </tr>
