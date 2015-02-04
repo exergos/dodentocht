@@ -313,6 +313,28 @@
                $('#comp_table tr:eq(0) td:eq(1)').html('-')
             }
 
+{#        Fill Totaal row#}
+
+                {#        Als deelnemer niet aangekomen, zet "-" in tabel bovenaan#}
+        if ({{ header | get_at_index:2 }} > {{ header | get_at_index:6 }} ) {
+            $('#td_table_totaal_tijd').html("-");
+            $("#td_table_totaal_snelheid").html("-");
+        }
+    else {
+            $('#td_table_totaal_tijd').html("{{ table_totals |get_at_index:1 }}");
+            $("#td_table_totaal_snelheid").html("{{ table_totals |get_at_index:2 }}");
+        }
+
+                {#        Als deelnemer niet aangekomen, zet "-" in tabel bovenaan#}
+        if ({{ header | get_at_index:4 }} > {{ header | get_at_index:6 }} ) {
+            $('#td_table_totaal_tijd_comp').html("-");
+            $("#td_table_totaal_snelheid_comp").html("-");
+        }
+    else {
+            $('#td_table_totaal_tijd_comp').html("{{ table_totals |get_at_index:3 }}");
+            $("#td_table_totaal_snelheid_comp").html("{{ table_totals |get_at_index:4 }}");
+        }
+
         {#        Zet header_table op juist plaats#}
         // Set header wrapper in middle of page
         $("#header_wrapper").width($("#your_name_wrapper").width() +$("#comp_wrapper").width());
@@ -380,6 +402,8 @@
 
     }
 </script>
+
+
 
 {#Initiate autocomplete for input box#}
 <script>
@@ -482,16 +506,25 @@
                     {% endfor %}
                 </tr>
             {% endfor %}
+                        <tr>
+                <td id="td_table_totaal">Totaal</td>
+                <td></td>
+                <td id="td_table_totaal_tijd"></td>
+                <td id="td_table_totaal_snelheid"></td>
+                <td id="td_table_totaal_tijd_comp"></td>
+                <td id="td_table_totaal_snelheid_comp"></td>
+
+                </tr>
             </tbody>
         </table>
     </div>
     <div id="radar_chart_wrapper" class="center">
         {#Radar Chart#}
-        <canvas id="radar_chart" width ="400" height="341"></canvas>
+        <canvas id="radar_chart" width ="400" height="358"></canvas>
     </div>
     <div id="line_chart_wrapper" class="right">
         {#Line Chart#}
-        <canvas id="line_chart" width ="400" height="341"></canvas>
+        <canvas id="line_chart" width ="400" height="358"></canvas>
     </div>
     {#To make sure div wrapper has correct height#}
     <div style='clear: both'></div>

@@ -273,6 +273,15 @@ def dodentocht_query(form,ip_address, compare_string):
         # Sort based on datetimes
         time, speed, speed_avg, posts, km = (list(t) for t in zip(*sorted(zip(time, speed, speed_avg, posts, km))))
 
+        # time_total & time_comp_total
+        time_total = str(time[-1] - time[0])[:-3]
+
+        # speed_total & speed_comp_total
+        a = time[-1] - time[0]
+
+        speed_total = round(3600*(km[-1] - km[0])/a.seconds,1)
+
+
         # Round last entry in km (aankomst = 100 km) to int
         km[-1] = int(km[-1])
 
@@ -297,10 +306,23 @@ def dodentocht_query(form,ip_address, compare_string):
             time_avg.append(time_graph_avg[i].astimezone(brussels).strftime("%H:%M"))
         # time_graph = time
 
+        time_avg_total = str(time_graph_avg[-1] - time_graph_avg[0])[:-3]
+        b = time_graph_avg[-1] - time_graph_avg[0]
+        speed_avg_total = round(3600*(km[-1] - km[0])/b.seconds,1)
+
         # Make table
         table = list()
         for i in range(len(time)):
             table.append(list([posts[i],km[i],time[i],speed[i],time_avg[i], speed_avg[i]]))
+
+
+        # Make table_totals
+        table_totals = list()
+        table_totals.append(time_total)
+        table_totals.append(speed_total)
+        table_totals.append(time_avg_total)
+        table_totals.append(speed_avg_total)
+
 
         # JSON for communication between Server & Web App
         # Strings no prob (so no JSON necessary for posts (but use SAFE in template))
@@ -310,7 +332,7 @@ def dodentocht_query(form,ip_address, compare_string):
         time_graph = json.dumps(time_graph, cls=DateTimeEncoder)
         time_graph_avg = json.dumps(time_graph_avg, cls=DateTimeEncoder)
 
-        context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_avg" : speed_avg, 'time_graph' : time_graph, 'time_graph_avg' : time_graph_avg, 'table' : table, 'names' : names}
+        context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_avg" : speed_avg, 'time_graph' : time_graph, 'time_graph_avg' : time_graph_avg, 'table' : table, "table_totals" : table_totals, "names" : names}
 
     # If compare is not average, but another person
     else:
@@ -369,7 +391,17 @@ def dodentocht_query(form,ip_address, compare_string):
     
             # Sort based on datetimes
             time, time_comp, speed, speed_comp, posts, km = (list(t) for t in zip(*sorted(zip(time, time_comp, speed, speed_comp, posts, km))))
-    
+
+            # time_total & time_comp_total
+            time_total = str(time[-1] - time[0])[:-3]
+            time_comp_total = str(time_comp[-1] - time_comp[0])[:-3]
+
+            # speed_total & speed_comp_total
+            a = time[-1] - time[0]
+            b = time_comp[-1] - time_comp[0]
+            speed_total = round(3600*(km[-1] - km[0])/a.seconds,1)
+            speed_comp_total = round(3600*(km[-1] - km[0])/b.seconds,1)
+
             # Round last entry in km (aankomst = 100 km) to int
             km[-1] = int(km[-1])
     
@@ -394,7 +426,14 @@ def dodentocht_query(form,ip_address, compare_string):
             table = list()
             for i in range(len(time)):
                 table.append(list([posts[i],km[i],time[i],speed[i],time_comp[i], speed_comp[i]]))
-    
+
+            # Make table_totals
+            table_totals = list()
+            table_totals.append(time_total)
+            table_totals.append(speed_total)
+            table_totals.append(time_comp_total)
+            table_totals.append(speed_comp_total)
+
             # JSON for communication between Server & Web App
             # Strings no prob (so no JSON necessary for posts (but use SAFE in template))
             # Compare speeds in radar chart
@@ -403,5 +442,5 @@ def dodentocht_query(form,ip_address, compare_string):
             time_graph = json.dumps(time_graph, cls=DateTimeEncoder)
             time_graph_comp = json.dumps(time_graph_comp, cls=DateTimeEncoder)
     
-            context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp, 'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'table' : table, 'names' : names}
+            context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp, 'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'table' : table, "table_totals" : table_totals, 'names' : names}
     return context_dict
