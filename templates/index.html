@@ -67,7 +67,7 @@
 
             $('#input_form').submit(function(){
                 // make input name url string
-                url_string = $("#id_your_name").val().replace(" ", "-");
+                url_string = $("#id_your_name").val().replace(/ /g, '-');
                 form_action = "/" + url_string + "/";
 
                 // set form action url
