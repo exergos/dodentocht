@@ -65,29 +65,48 @@
             $('#id_your_name').attr("onfocus","make_blank(this);");
             $('#id_your_name').attr("onblur","restore_placeholder(this);");
 
+            $('#input_form').submit(function(){
+                // make input name url string
+                url_string = $("#id_your_name").val().replace(" ", "-");
+                form_action = "/" + url_string + "/";
+
+                // set form action url
+                $('#input_form').attr('action', form_action);
+
+                // loading image
+                $('#input_form').css("display", "none");
+                $('#loading').css("display", "block");
+
+                // Vertically centralize
+                var margin_top = ($(window).height() - $('#loading').height()) / 2;
+                $('#loading').css("margin-top", margin_top);
+
+                return true;
+            });
+
             // Initialize autocomplete
             names = {{ names | safe }};
 
             // HTML template string
             var nameTemplate =
-                '<div class="autocomplete_results">' +
-                '{name}' +
-                '</div>';
+                    '<div class="autocomplete_results">' +
+                    '{name}' +
+                    '</div>';
 
             YUI().use('autocomplete', 'autocomplete-filters', 'autocomplete-highlighters', function (Y) {
                 function nameFormatter(query, results) {
-                // Iterate over the array of name result objects and return an
-                // array of HTML strings.
-                return Y.Array.map(results, function (result) {
-                    var name = result.raw;
+                    // Iterate over the array of name result objects and return an
+                    // array of HTML strings.
+                    return Y.Array.map(results, function (result) {
+                        var name = result.raw;
 
-                    // Use string substitution to fill out the name template and
-                    // return an HTML string for this result.
-                    return Y.Lang.sub(nameTemplate, {
-                        name: name
+                        // Use string substitution to fill out the name template and
+                        // return an HTML string for this result.
+                        return Y.Lang.sub(nameTemplate, {
+                            name: name
+                        });
                     });
-                });
-            }
+                }
                 Y.one('#id_your_name').plug(Y.Plugin.AutoComplete, {
                     resultFormatter : nameFormatter,
                     resultFilters    : 'phraseMatch',
@@ -122,19 +141,6 @@
                 oInput.value = 'Naam?';
         }
     </script>
-
-    {#    Loading gif#}
-    <script>
-        function loading() {
-            $('#input_form').css("display","none");
-            $('#loading').css("display","block");
-
-            // Vertically centralize
-            var margin_top = ($(window).height()-$('#loading').height())/2;
-            $('#loading').css("margin-top",margin_top);
-
-        }
-    </script>
 </head>
 
 <body>
@@ -142,10 +148,11 @@
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
 <div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
-<form id ="input_form" class="form-naam yui3-skin-sam" action="/your-name/" onsubmit="loading()" method="post">
+
+<form id ="input_form" class="form-naam yui3-skin-sam" method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" name="yourname" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+    <input id="submit_button" type="submit" name="yourname" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 </form>
 </body>
 </html>

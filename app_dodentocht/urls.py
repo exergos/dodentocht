@@ -5,5 +5,5 @@ from app_dodentocht import views
 
 urlpatterns = patterns('',
         url(r'^$', views.index, name='index'),
-        url(r'^your-name/$', views.results, name='results'),
+        url(r'^', views.results, name='results'),
         )

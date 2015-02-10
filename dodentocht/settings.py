@@ -38,33 +38,33 @@ if DEBUG:
     # Database
     # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
 
+    DATABASES = {
+         'default': {
+             'NAME': 'dodentocht',
+             'ENGINE': 'mysql.connector.django',
+             'USER': 'root',
+             'PASSWORD': 'Will0870',
+             'HOST': 'EXERGOS-PC',
+             'OPTIONS': {
+                 'autocommit': True,
+                 },
+             }
+     }
+
     # DATABASES = {
     #     'default': {
-    #         'NAME': 'dodentocht',
+    #         'NAME': 'heroku_a8c4b0cefde9e4f',
     #         'ENGINE': 'mysql.connector.django',
-    #         'USER': 'root',
-    #         'PASSWORD': 'Will0870',
-    #         'HOST': 'EXERGOS-PC',
+    #         'USER': 'b21ac369402104',
+    #         'PASSWORD': '71a611ed',
+    #         'HOST': 'us-cdbr-iron-east-01.cleardb.net',
+    #         # 'PORT' : '3306',
     #         'OPTIONS': {
     #             'autocommit': True,
+    #             'connect_timeout': 20000,
     #             },
     #         }
     # }
-
-    DATABASES = {
-        'default': {
-            'NAME': 'heroku_a8c4b0cefde9e4f',
-            'ENGINE': 'mysql.connector.django',
-            'USER': 'b21ac369402104',
-            'PASSWORD': '71a611ed',
-            'HOST': 'us-cdbr-iron-east-01.cleardb.net',
-            # 'PORT' : '3306',
-            'OPTIONS': {
-                'autocommit': True,
-                'connect_timeout': 20000,
-                },
-            }
-    }
 
     STATICFILES_FINDERS = (
         'compressor.finders.CompressorFinder',
