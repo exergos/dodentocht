@@ -1,6 +1,7 @@
 from django.shortcuts import render
 # Create your views here.
 from django.http import HttpResponseRedirect
+from django.http import HttpResponse
 from django.shortcuts import render
 
 # Import models to use in website (database - site connection)
@@ -77,66 +78,95 @@ def results(request):
     # create a form instance and populate it with data from the request:
     form = forms.NameForm(request.POST)
 
-    # check whether it's valid:
+    # # check whether it's valid:
+    # if request.is_ajax():
+    #     #if  'Change comp' in request.POST:
+    #     # Save it to requests
+    #     ##########################################
+    #     # Store requested participant in database
+    #     # Create model to write to database:
+    #     get_status = requests() #imported class from model
+    #     # 1. IP Address
+    #     x_forwarded_for = request.META.get('REMOTE_ADDR')
+    #     if x_forwarded_for:
+    #         ip_address = x_forwarded_for.split(',')[-1].strip()
+    #     else:
+    #         ip_address = request.META.get('REMOTE_ADDR')
+    #     get_status.ip_address= ip_address
+    #
+    #     # 2. Date
+    #     # Create localization
+    #     brussels = pytz.timezone("Europe/Brussels")
+    #     get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
+    #
+    #     # 3. Requested name
+    #     comp_name = form['your_name']
+    #     get_status.name_requested = comp_name
+    #
+    #     # 4. Comp or not?
+    #     comp = 1
+    #     get_status.comp = comp
+    #
+    #     # Save
+    #     get_status.save()
+    #     ###########################################
+    #
+    #     # Now compare with new request (instead of average)
+    #     context_dict = dodentocht_query(form,ip_address,"compare")
     if form.is_valid():
-        ##########################################
-        # Store requested participant in database
-        # Create model to write to database:
-        get_status = requests() #imported class from model
-        # 1. IP Address
-        x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-        if x_forwarded_for:
-            ip_address = x_forwarded_for.split(',')[-1].strip()
-        else:
-            ip_address = request.META.get('REMOTE_ADDR')
-        get_status.ip_address= ip_address
+        if "yourname" in request.POST:
+            ##########################################
+            # Store requested participant in database
+            # Create model to write to database:
+            get_status = requests() #imported class from model
+            # 1. IP Address
+            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
+            if x_forwarded_for:
+                ip_address = x_forwarded_for.split(',')[-1].strip()
+            else:
+                ip_address = request.META.get('REMOTE_ADDR')
+            get_status.ip_address= ip_address
 
-        # 2. Date
-        # Create localization
-        brussels = pytz.timezone("Europe/Brussels")
-        get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
+            # 2. Date
+            # Create localization
+            brussels = pytz.timezone("Europe/Brussels")
+            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
 
-        # 3. Requested name
-        your_name = form.cleaned_data['your_name']
-        get_status.name_requested = your_name
+            # 3. Requested name
+            your_name = form.cleaned_data['your_name']
+            get_status.name_requested = your_name
 
-        # 4. Comp or not?
-        comp = 0
-        get_status.comp = comp
+            # 4. Comp or not?
+            comp = 0
+            get_status.comp = comp
 
-        # Save
-        get_status.save()
-        ###########################################
+            # Save
+            get_status.save()
+            ###########################################
 
-        # Process request
-        context_dict = dodentocht_query(form,ip_address,'average')
+            # Process request
+            context_dict = dodentocht_query(form,ip_address,'average')
 
-    # Get names from database to use autocomplete:
-    your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
-    names = list()
-    for i in range(len(your_name_db_namen)):
-        names.append(your_name_db_namen[i][0])
+            # Get names from database to use autocomplete:
+            your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
+            names = list()
+            for i in range(len(your_name_db_namen)):
+                names.append(your_name_db_namen[i][0])
 
-    # add names to context_dict
-    context_dict["names"] =  names
+            # add names to context_dict
+            context_dict["names"] =  names
 
-    # create empty forms
-    form_yourname = forms.NameForm(auto_id='id_%s_1')
-    form_comp = forms.NameForm(auto_id='id_%s_2')
+            # create empty forms
+            form_yourname = forms.NameForm(auto_id='id_%s_1')
+            form_comp = forms.NameForm(auto_id='id_%s_2')
 
-    # add form_comp to context_dict
-    context_dict['form_yourname'] = form_yourname
-    context_dict['form_comp'] = form_comp
+            # add form_comp to context_dict
+            context_dict['form_yourname'] = form_yourname
+            context_dict['form_comp'] = form_comp
 
-    return render(request, 'results.html' , context_dict)
-
-def compare(request):
-    # create a form instance and populate it with data from the request:
-    form = forms.NameForm(request.POST)
-
-    # check whether it's valid:
-    if form.is_valid():
-        if 'Change comp' in request.POST:
+            return render(request, 'results.html', context_dict)
+        if request.POST.get('form_name') == "form_compare":
+            #if  'Change comp' in request.POST:
             # Save it to requests
             ##########################################
             # Store requested participant in database
@@ -169,9 +199,8 @@ def compare(request):
 
             # Now compare with new request (instead of average)
             context_dict = dodentocht_query(form,ip_address,"compare")
-
-
-        if 'Change yourname' in request.POST:
+        if request.POST.get('form_name') == "form_your_name":
+            # if 'Change yourname' in request.POST:
             # Save it to requests
             ##########################################
             # Store requested participant in database
@@ -209,21 +238,7 @@ def compare(request):
             except requests.DoesNotExist:
                 context_dict = dodentocht_query(form,ip_address,"average")
 
-    # Get names from database to use autocomplete:
-    your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
-    names = list()
-    for i in range(len(your_name_db_namen)):
-        names.append(your_name_db_namen[i][0])
-
-     # create empty forms
-    form_yourname = forms.NameForm(auto_id='id_%s_1')
-    form_comp = forms.NameForm(auto_id='id_%s_2')
-
-    # add form_comp to context_dict
-    context_dict['form_yourname'] = form_yourname
-    context_dict['form_comp'] = form_comp
-
-    return render(request, 'compare.html' , context_dict)
+    return HttpResponse(json.dumps(context_dict), content_type = "application/json")
 
 def dodentocht_query(form,ip_address, compare_string):
     if compare_string == 'average':
@@ -238,7 +253,7 @@ def dodentocht_query(form,ip_address, compare_string):
 
         your_name_db_tijd = dodentocht_tijd.objects.filter(Naam=your_name)
         your_name_db_snelheid = dodentocht_snelheid.objects.filter(Naam=your_name)
-        your_name_db_snelheid_avg = dodentocht_snelheid_avg.objects.all()
+        your_name_db_snelheid_comp = dodentocht_snelheid_avg.objects.all()
         your_name_db_km = dodentocht_totaal_avg.objects.filter(Data="Km")
         your_name_db_participants = dodentocht_totaal_avg.objects.filter(Data="In race")
 
@@ -248,19 +263,24 @@ def dodentocht_query(form,ip_address, compare_string):
 
         # Make output
         # Header: name and rank of participant, total number of participants, total number of participant who finished race
-        header = list()
-        header.append(your_name)
-        header.append(your_name_db_tijd.values()[0]["Rang"])
-        header.append(int(your_name_db_participants.values()[0]["Start"]))
-        header.append(int(your_name_db_participants.values()[0]["Aankomst"]))
+        names_selected = list()
+        names_selected.append(your_name)
+        names_selected.append("Gemiddeld")
 
+        names_selected_position = list()
+        names_selected_position.append(your_name_db_tijd.values()[0]["Rang"])
+        names_selected_position.append(0)
+
+        participants = list()
+        participants.append(int(your_name_db_participants.values()[0]["Start"]))
+        participants.append(int(your_name_db_participants.values()[0]["Aankomst"]))
 
         # Table: posts and time/speed
         posts = list()
         km = list()
         time = list()
         speed = list()
-        speed_avg = list()
+        speed_comp = list()
         data_keys = list(your_name_db_tijd.values()[0])
         for key in data_keys:
             if type(your_name_db_tijd.values()[0][key]) is datetime.datetime:
@@ -268,19 +288,23 @@ def dodentocht_query(form,ip_address, compare_string):
                 km.append(round(your_name_db_km.values()[0][key],2))
                 time.append(your_name_db_tijd.values()[0][key])
                 speed.append(round(your_name_db_snelheid.values()[0][key],1))
-                speed_avg.append(round(your_name_db_snelheid_avg.values()[0][key],1))
+                speed_comp.append(round(your_name_db_snelheid_comp.values()[0][key],1))
 
         # Sort based on datetimes
-        time, speed, speed_avg, posts, km = (list(t) for t in zip(*sorted(zip(time, speed, speed_avg, posts, km))))
+        time, speed, speed_comp, posts, km = (list(t) for t in zip(*sorted(zip(time, speed, speed_comp, posts, km))))
 
         # time_total & time_comp_total
-        time_total = str(time[-1] - time[0])[:-3]
-
-        # speed_total & speed_comp_total
-        a = time[-1] - time[0]
-
-        speed_total = round(3600*(km[-1] - km[0])/a.seconds,1)
-
+        import math
+        for i in range(15,0,-1):
+            if time[i].month is 9:
+                a = time[i] - time[0]
+                hours = str(a.days*24 + math.floor(a.seconds/3600))
+                minutes = str(int((a.seconds - math.floor(a.seconds/3600)*3600)/60))
+                if len(minutes) == 1:
+                    minutes = "0" + minutes
+                time_total = hours + ":" + minutes
+                speed_total = round(3600*(km[-1] - km[0])/(a.days*24*3600 + a.seconds),1)
+                break
 
         # Round last entry in km (aankomst = 100 km) to int
         km[-1] = int(km[-1])
@@ -292,47 +316,48 @@ def dodentocht_query(form,ip_address, compare_string):
 
         # Change datetimes to correct timezone and output format
         time_graph = list()
-        time_graph_avg = list()
-        time_avg = list()
+        time_graph_comp = list()
+        time_comp = list()
         for i in range(len(time)):
             time_graph.append(time[i].astimezone(brussels))
             time[i] = time[i].astimezone(brussels).strftime("%H:%M")
 
             if i == 0:
-                time_graph_avg.append(time_graph[i])
+                time_graph_comp.append(time_graph[i])
 
             else:
-                time_graph_avg.append(time_graph_avg[i-1] + datetime.timedelta(seconds=int(((km[i]-km[i-1])/speed_avg[i])*3600)))
-            time_avg.append(time_graph_avg[i].astimezone(brussels).strftime("%H:%M"))
+                time_graph_comp.append(time_graph_comp[i-1] + datetime.timedelta(seconds=int(((km[i]-km[i-1])/speed_comp[i])*3600)))
+            time_comp.append(time_graph_comp[i].astimezone(brussels).strftime("%H:%M"))
         # time_graph = time
 
-        time_avg_total = str(time_graph_avg[-1] - time_graph_avg[0])[:-3]
-        b = time_graph_avg[-1] - time_graph_avg[0]
-        speed_avg_total = round(3600*(km[-1] - km[0])/b.seconds,1)
-
-        # Make table
-        table = list()
-        for i in range(len(time)):
-            table.append(list([posts[i],km[i],time[i],speed[i],time_avg[i], speed_avg[i]]))
-
-
-        # Make table_totals
-        table_totals = list()
-        table_totals.append(time_total)
-        table_totals.append(speed_total)
-        table_totals.append(time_avg_total)
-        table_totals.append(speed_avg_total)
-
+        time_comp_total = str(time_graph_comp[-1] - time_graph_comp[0])[:-3]
+        b = time_graph_comp[-1] - time_graph_comp[0]
+        speed_comp_total = round(3600*(km[-1] - km[0])/b.seconds,1)
 
         # JSON for communication between Server & Web App
         # Strings no prob (so no JSON necessary for posts (but use SAFE in template))
         # Compare speeds in radar chart
+        names = json.dumps(names)
+        names_selected = json.dumps(names_selected)
+        names_selected_position = json.dumps(names_selected_position)
+        participants = json.dumps(participants)
+        posts = json.dumps(posts)
         speed = json.dumps(speed, cls=DecimalEncoder)
-        speed_avg = json.dumps(speed_avg, cls=DecimalEncoder)
+        speed_comp = json.dumps(speed_comp, cls=DecimalEncoder)
         time_graph = json.dumps(time_graph, cls=DateTimeEncoder)
-        time_graph_avg = json.dumps(time_graph_avg, cls=DateTimeEncoder)
+        time_graph_comp = json.dumps(time_graph_comp, cls=DateTimeEncoder)
+        time = json.dumps(time)
+        time_comp = json.dumps(time_comp)
+        km = json.dumps(km, cls=DecimalEncoder)
+        time_total = json.dumps(time_total)
+        speed_total = json.dumps(speed_total, cls=DecimalEncoder)
+        time_comp_total = json.dumps(time_comp_total)
+        speed_comp_total = json.dumps(speed_comp_total, cls=DecimalEncoder)
 
-        context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_avg" : speed_avg, 'time_graph' : time_graph, 'time_graph_avg' : time_graph_avg, 'table' : table, "table_totals" : table_totals, "names" : names}
+        context_dict = {'names' : names, "names_selected" : names_selected, "names_selected_position" : names_selected_position,
+                        "participants" : participants, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp,
+                        'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'time' : time, "time_comp" : time_comp, "km" : km,
+                        "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total}
 
     # If compare is not average, but another person
     else:
@@ -341,36 +366,37 @@ def dodentocht_query(form,ip_address, compare_string):
             your_name = requests.objects.filter(comp__exact=0).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
             comp_name = requests.objects.filter(comp__exact=1).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
 
-            # # Get name from form
-            # comp_name = form.cleaned_data['your_name']
-            
             # Lookup in database
             your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
             names = list()
             for i in range(len(your_name_db_namen)):
                 names.append(your_name_db_namen[i][0])
-    
+
             your_name_db_tijd = dodentocht_tijd.objects.filter(Naam=your_name)
             your_name_db_snelheid = dodentocht_snelheid.objects.filter(Naam=your_name)
             your_name_db_km = dodentocht_totaal_avg.objects.filter(Data="Km")
             your_name_db_participants = dodentocht_totaal_avg.objects.filter(Data="In race")
-            
+
             comp_name_db_tijd = dodentocht_tijd.objects.filter(Naam=comp_name)
             comp_name_db_snelheid = dodentocht_snelheid.objects.filter(Naam=comp_name)
-    
+
             import pytz
             # Create localization
             brussels = pytz.timezone("Europe/Brussels")
-    
+
             # Make output
             # Header: name and rank of participant, total number of participants, total number of participant who finished race
-            header = list()
-            header.append(your_name)
-            header.append(your_name_db_tijd.values()[0]["Rang"])
-            header.append(comp_name)
-            header.append(comp_name_db_tijd.values()[0]["Rang"])
-            header.append(int(your_name_db_participants.values()[0]["Start"]))
-            header.append(int(your_name_db_participants.values()[0]["Aankomst"]))
+            names_selected = list()
+            names_selected.append(your_name)
+            names_selected.append(comp_name)
+
+            names_selected_position = list()
+            names_selected_position.append(your_name_db_tijd.values()[0]["Rang"])
+            names_selected_position.append(comp_name_db_tijd.values()[0]["Rang"])
+
+            participants = list()
+            participants.append(int(your_name_db_participants.values()[0]["Start"]))
+            participants.append(int(your_name_db_participants.values()[0]["Aankomst"]))
 
             # Table: posts and time/speed
             posts = list()
@@ -388,28 +414,42 @@ def dodentocht_query(form,ip_address, compare_string):
                     time_comp.append(comp_name_db_tijd.values()[0][key])
                     speed.append(round(your_name_db_snelheid.values()[0][key],1))
                     speed_comp.append(round(comp_name_db_snelheid.values()[0][key],1))
-    
+
             # Sort based on datetimes
             time, time_comp, speed, speed_comp, posts, km = (list(t) for t in zip(*sorted(zip(time, time_comp, speed, speed_comp, posts, km))))
 
             # time_total & time_comp_total
-            time_total = str(time[-1] - time[0])[:-3]
-            time_comp_total = str(time_comp[-1] - time_comp[0])[:-3]
+            import math
+            for i in range(15,0,-1):
+                if time[i].month is 9:
+                    a = time[i] - time[0]
+                    hours = str(a.days*24 + math.floor(a.seconds/3600))
+                    minutes = str(int((a.seconds - math.floor(a.seconds/3600)*3600)/60))
+                    if len(minutes) == 1:
+                        minutes = "0" + minutes
+                    time_total = hours + ":" + minutes
+                    speed_total = round(3600*(km[-1] - km[0])/(a.days*24*3600 + a.seconds),1)
+                    break
 
-            # speed_total & speed_comp_total
-            a = time[-1] - time[0]
-            b = time_comp[-1] - time_comp[0]
-            speed_total = round(3600*(km[-1] - km[0])/a.seconds,1)
-            speed_comp_total = round(3600*(km[-1] - km[0])/b.seconds,1)
+            for i in range(15,0,-1):
+                if time_comp[i].month is 9:
+                    b = time_comp[i] - time_comp[0]
+                    hours = str(b.days*24 + math.floor(b.seconds/3600))
+                    minutes = str(int((b.seconds - math.floor(b.seconds/3600)*3600)/60))
+                    if len(minutes) == 1:
+                        minutes = "0" + minutes
+                    time_comp_total = hours + ":" + minutes
+                    speed_comp_total = round(3600*(km[-1] - km[0])/(b.days*24*3600 + b.seconds),1)
+                    break
 
             # Round last entry in km (aankomst = 100 km) to int
             km[-1] = int(km[-1])
-    
+
             # Verander Sint_Amands in Sint-Amands
             for i in range(len(posts)):
                 if "_" in posts[i]:
                     posts[i] = posts[i].replace("_","-")
-    
+
             # Change datetimes to correct timezone and output format
             time_graph = list()
             time_graph_comp = list()
@@ -420,27 +460,28 @@ def dodentocht_query(form,ip_address, compare_string):
                 time_graph_comp.append(time_comp[i].astimezone(brussels))
                 time_comp[i] = time_comp[i].astimezone(brussels).strftime("%H:%M")
 
-            # time_graph = time
-    
-            # Make table
-            table = list()
-            for i in range(len(time)):
-                table.append(list([posts[i],km[i],time[i],speed[i],time_comp[i], speed_comp[i]]))
-
-            # Make table_totals
-            table_totals = list()
-            table_totals.append(time_total)
-            table_totals.append(speed_total)
-            table_totals.append(time_comp_total)
-            table_totals.append(speed_comp_total)
-
             # JSON for communication between Server & Web App
             # Strings no prob (so no JSON necessary for posts (but use SAFE in template))
             # Compare speeds in radar chart
+            names = json.dumps(names)
+            names_selected = json.dumps(names_selected)
+            names_selected_position = json.dumps(names_selected_position)
+            participants = json.dumps(participants)
+            posts = json.dumps(posts)
             speed = json.dumps(speed, cls=DecimalEncoder)
             speed_comp = json.dumps(speed_comp, cls=DecimalEncoder)
             time_graph = json.dumps(time_graph, cls=DateTimeEncoder)
             time_graph_comp = json.dumps(time_graph_comp, cls=DateTimeEncoder)
-    
-            context_dict = {'header' : header, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp, 'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'table' : table, "table_totals" : table_totals, 'names' : names}
+            time = json.dumps(time)
+            time_comp = json.dumps(time_comp)
+            km = json.dumps(km, cls=DecimalEncoder)
+            time_total = json.dumps(time_total)
+            speed_total = json.dumps(speed_total, cls=DecimalEncoder)
+            time_comp_total = json.dumps(time_comp_total)
+            speed_comp_total = json.dumps(speed_comp_total, cls=DecimalEncoder)
+
+            context_dict = {'names' : names, "names_selected" : names_selected, "names_selected_position" : names_selected_position,
+                            "participants" : participants, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp,
+                            'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'time' : time, "time_comp" : time_comp, "km" : km,
+                            "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total}
     return context_dict

@@ -15,14 +15,18 @@
     {#This import css file (static)#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     {% if DEBUG %}
-{#        In DEBUG mode use sass   #}
+        {#        In DEBUG mode use sass   #}
         {% compress css %}
             <link rel="stylesheet" type="text/x-scss" href="{% static 'css/style.scss' %}" />
         {% endcompress %}
     {% else %}
-{#        In production use regular css#}
+        {#        In production use regular css#}
         <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}" />
     {% endif %}
+
+    {#    Import typeahead#}
+    {#Options: http://yuilibrary.com/yui/docs/autocomplete/#configuring-autocomplete#}
+    <script src="http://yui.yahooapis.com/3.18.1/build/yui/yui-min.js"></script>
 
     {#This import everything related to jQuery-UI#}
     <link rel="stylesheet" type="text/css" href="{% static 'css/jQuery-UI/jquery-ui.min.css' %}" />
@@ -33,9 +37,9 @@
     <title>Dodentocht App</title>
     <script>
         $(window).load(function() {
-  // When the page has loaded
-  $("body").css("visibility",'visible')
-});
+            // When the page has loaded
+            $("body").css("visibility",'visible')
+        });
         $(document).ready(function(){
 
             $(window).resize(function(){
@@ -61,8 +65,45 @@
             $('#id_your_name').attr("onfocus","make_blank(this);");
             $('#id_your_name').attr("onblur","restore_placeholder(this);");
 
+            // Initialize autocomplete
+            names = {{ names | safe }};
 
+            // HTML template string
+            var nameTemplate =
+                '<div class="autocomplete_results">' +
+                '{name}' +
+                '</div>';
+
+            YUI().use('autocomplete', 'autocomplete-filters', 'autocomplete-highlighters', function (Y) {
+                function nameFormatter(query, results) {
+                // Iterate over the array of name result objects and return an
+                // array of HTML strings.
+                return Y.Array.map(results, function (result) {
+                    var name = result.raw;
+
+                    // Use string substitution to fill out the name template and
+                    // return an HTML string for this result.
+                    return Y.Lang.sub(nameTemplate, {
+                        name: name
+                    });
+                });
+            }
+                Y.one('#id_your_name').plug(Y.Plugin.AutoComplete, {
+                    resultFormatter : nameFormatter,
+                    resultFilters    : 'phraseMatch',
+                    resultHighlighter: 'phraseMatch',
+                    source           : names,
+                    maxResults: 10,
+                    minQueryLength: 3
+                });
+            });
         });
+    </script>
+
+    {#    Nameformatter for autocomplete#}
+    <script>
+
+
     </script>
 
     {#    Script om placeholder te creëren in text box die verdwijnt vanaf invullen naam#}
@@ -82,29 +123,18 @@
         }
     </script>
 
-    {#Initiate autocomplete for input box#}
+    {#    Loading gif#}
     <script>
-        $(function() {
-            var names = {{ names | safe }}
-                    $( "#id_your_name" ).autocomplete({
-                        source: names,
-                        minLength: 4
-                    });
-        });
+        function loading() {
+            $('#input_form').css("display","none");
+            $('#loading').css("display","block");
+
+            // Vertically centralize
+            var margin_top = ($(window).height()-$('#loading').height())/2;
+            $('#loading').css("margin-top",margin_top);
+
+        }
     </script>
-
-{#Loading signal script#}
-<script>
-    function loading() {
-        $('#input_form').css("display","none");
-        $('#loading').css("display","block");
-
-        // Vertically centralize
-        var margin_top = ($(window).height()-$('#loading').height())/2;
-        $('#loading').css("margin-top",margin_top);
-
-    }
-</script>
 </head>
 
 <body>
@@ -112,10 +142,10 @@
 {#<input type="text" class="input-naam" value="Naam?" onfocus="make_blank(this);"  onblur="restore_placeholder(this);" />#}
 {#<input type="submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>#}
 <div id="loading" style="display: none"><img src="{% static 'images/ajax-loader.gif' %}"></div>
-<form id ="input_form" class="form-naam" action="/your-name/" onsubmit="loading()" method="post">
+<form id ="input_form" class="form-naam yui3-skin-sam" action="/your-name/" onsubmit="loading()" method="post">
     {% csrf_token %}
     {{ form }}
-    <input type="submit" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
+    <input type="submit" name="yourname" value="Submit" style="position: absolute; left: -9999px; width: 1px; height: 1px;"/>
 </form>
 </body>
 </html>

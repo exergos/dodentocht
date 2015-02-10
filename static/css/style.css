@@ -26,10 +26,16 @@ body {
 /*As center piece, use margin/padding to create space*/
 .center {
   float: left;
+  margin-left: 5pc;
+  margin-right: 5pc;
 }
 
 .right {
   float: left;
+}
+
+#wrapper {
+  margin-top: 3pc;
 }
 
 input {
@@ -206,4 +212,9 @@ td.comp_name {
 
 #line_chart_wrapper {
   background: rgba(255, 255, 255, 0.9);
+}
+
+.autocomplete_results {
+  font-family: monospace, monospace;
+  font-size: 16px;
 }

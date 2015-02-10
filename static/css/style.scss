@@ -19,6 +19,9 @@ body {
   visibility: hidden;
 }
 
+
+
+
 .container {
   margin: 0 auto;
   display: inline-block;
@@ -33,10 +36,16 @@ body {
 /*As center piece, use margin/padding to create space*/
 .center {
   float: left;
+  margin-left: 5pc;
+  margin-right: 5pc;
 }
 
 .right {
   float: left;
+}
+
+#wrapper {
+  margin-top: 3pc;
 }
 
 input { font-size:16px;
@@ -212,4 +221,9 @@ td.comp_name {
 
 #line_chart_wrapper {
   background: $white;
+}
+
+.autocomplete_results {
+  font-family: $font-family;
+  font-size: 16px;
 }
