@@ -37,19 +37,19 @@ if DEBUG:
         ]
     # Database
     # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-
+    #
     # DATABASES = {
     #      'default': {
     #          'NAME': 'dodentocht',
     #          'ENGINE': 'mysql.connector.django',
     #          'USER': 'root',
-    #          'PASSWORD': 'Will0870',
-    #          'HOST': 'EXERGOS-PC',
+    #          'PASSWORD': '',
+    #          'HOST': '127.0.0.1',
     #          'OPTIONS': {
     #              'autocommit': True,
     #              },
     #          }
-    #  }
+    # }
 
     DATABASES = {
         'default': {
@@ -61,7 +61,8 @@ if DEBUG:
             # 'PORT' : '3306',
             'OPTIONS': {
                 'autocommit': True,
-                'connect_timeout': 20000,
+                'buffered': True,
+                'connect_timeout': 200000,
                 },
             }
     }

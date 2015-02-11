@@ -10,6 +10,8 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+{#favicon.ico#}
+<link rel="shortcut icon" href="{% static "images/favicon.ico" %}" />
 {#    This makes sure css hover function works in IE#}
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 {#This import jQuery#}
@@ -75,6 +77,8 @@ $(document).ready(function(){
     speed_total = {{ speed_total }};
     time_comp_total = {{ time_comp_total | safe }};
     speed_comp_total = {{ speed_comp_total }};
+    opgaves = {{ opgaves }};
+    inrace = {{ inrace }};
 
     // Set title
     document.title = names_selected[0];
@@ -105,13 +109,13 @@ $(document).ready(function(){
     // Change table data in javascript
     // Slow, can be fixed by writing better prepared data into database
     // For example: don't write numbers, but write varchar to database
-    fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp);
+    fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp, opgaves, inrace);
 
     // Do css stuff in javascript (mainly vertical centralizing)
     // Create Gaugechart after this!
     javascript_css();
 
-        if (names_selected[1] == "Gemiddeld") {
+    if (names_selected[1] == "Gemiddeld") {
         createGaugechart(names_selected, names_selected_position,participants)
     }
     else {
@@ -215,6 +219,8 @@ $(document).ready(function(){
                 speed_total = $.parseJSON(result["speed_total"]);
                 time_comp_total = $.parseJSON(result["time_comp_total"]);
                 speed_comp_total = $.parseJSON(result["speed_comp_total"]);
+                opgaves = $.parseJSON(result["opgaves"]);
+                inrace = $.parseJSON(result["inrace"]);
 
                 createRadarchart(colors,speed,speed_comp,posts);
                 createLinechart(colors,time_graph,time_graph_comp);
@@ -225,7 +231,7 @@ $(document).ready(function(){
                 else {
                     createGaugechart_comp(names_selected, names_selected_position,participants)
                 }
-                fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp);
+                fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp, opgaves, inrace);
 
                 // Do css stuff in javascript (mainly vertical centralizing)
                 // Hide stuff
@@ -290,6 +296,8 @@ $(document).ready(function(){
                 speed_total = $.parseJSON(result["speed_total"]);
                 time_comp_total = $.parseJSON(result["time_comp_total"]);
                 speed_comp_total = $.parseJSON(result["speed_comp_total"]);
+                opgaves = $.parseJSON(result["opgaves"]);
+                inrace = $.parseJSON(result["inrace"]);
 
                 createRadarchart(colors,speed,speed_comp,posts);
                 createLinechart(colors,time_graph,time_graph_comp);
@@ -300,7 +308,7 @@ $(document).ready(function(){
                 else {
                     createGaugechart_comp(names_selected, names_selected_position,participants)
                 }
-                fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp);
+                fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp, opgaves, inrace);
 
                 // Do css stuff in javascript (mainly vertical centralizing)
                 // Hide stuff
@@ -677,8 +685,8 @@ $(document).ready(function(){
 <script>
     function createLinechart(colors,time_graph,time_graph_comp) {
 
-        var time_graph = time_graph;
-        var time_graph_comp = time_graph_comp;
+{#        var time_graph = time_graph;#}
+{#        var time_graph_comp = time_graph_comp;#}
         var time_graph_ms = [];
         var time_graph_comp_ms = [];
         {#            Count how many posts where not attained by walker#}
@@ -693,9 +701,11 @@ $(document).ready(function(){
             time_graph_ms[i] = moment(time_graph[i]).unix();
             time_graph_comp_ms[i] = moment(time_graph_comp[i]).unix();
             if (time_graph_ms[i] >= 1420066800) {
+{#                time_graph_ms[i] = false;#}
                 count_2015 = count_2015 + 1;
             }
             if (time_graph_comp_ms[i] >= 1420066800) {
+{#                time_graph_comp_ms[i] = false;#}
                 count_2015_comp = count_2015_comp + 1;
             }
         }
@@ -739,6 +749,11 @@ $(document).ready(function(){
             scaleLabel: "<%=moment.unix(value).startOf('hour').format('HH:mm')%>",
 
             // On the tooltips, give hours and minutes
+            // For the moment, don't show tooltips
+            // Error if we do:
+            // Chart with 2 non finishers, trying to display tooltip where there is no data (the last posts)
+            // Will use cached data (average) to display
+            showTooltips: false,
             multiTooltipTemplate: "<%=moment.unix(value).format('HH:mm')%>",
             scaleFontFamily: "'monospace',monospace",
             scaleFontStyle: "normal",
@@ -773,20 +788,20 @@ $(document).ready(function(){
         // Set classes of table rows (for correct colors and hover specs)
         $('#dodentocht_table tbody tr').each(function() {
             // First column posts (neutral)
-            $($(this)).find("td:eq(0),td:eq(1)").addClass("neutral");
+            $($(this)).find("td:eq(0),td:eq(1),td:eq(2),td:eq(3)").addClass("neutral");
 
             // Next two columns (your_name)
-            $($(this)).find("td:eq(2),td:eq(3)").addClass("your_name");
+            $($(this)).find("td:eq(4),td:eq(5)").addClass("your_name");
 
             // Next two columns (comp_name)
-            $($(this)).find("td:eq(4),td:eq(5)").addClass("comp_name");
+            $($(this)).find("td:eq(6),td:eq(7)").addClass("comp_name");
         });
 
         // Set header wrapper in middle of page
-{#        $("#gauge_chart_wrapper").width($("#your_name_wrapper").width() +$("#comp_wrapper").width());#}
-{#        $("#gauge_chart_wrapper").height(300);#}
-{#        var margin_left = ($(window).width() -$("#header_wrapper").width())/2;#}
-{#        $("#gauge_chart_wrapper").css('margin-left',margin_left);#}
+        {#        $("#gauge_chart_wrapper").width($("#your_name_wrapper").width() +$("#comp_wrapper").width());#}
+        {#        $("#gauge_chart_wrapper").height(300);#}
+        {#        var margin_left = ($(window).width() -$("#header_wrapper").width())/2;#}
+        {#        $("#gauge_chart_wrapper").css('margin-left',margin_left);#}
 
         $("#gauge_chart_wrapper").width($("#your_name_wrapper").width() +$("#comp_wrapper").width());
         $("#gauge_chart_wrapper").height(250);
@@ -815,79 +830,95 @@ $(document).ready(function(){
 
 {#    Fill table and fix representation issues#}
 <script>
-    function fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp) {
+    function fillTable(names_selected,names_selected_position,participants, time_total, speed_total, time_comp_total,speed_comp_total, posts,km,time,speed,time_comp,speed_comp, opgaves, inrace) {
         // Fill header of table
         $("#th_your_name").html(names_selected[0]);
         $("#th_comp").html(names_selected[1]);
 
         // Create 16 rows (dodentocht posts)
-        {#    Loop over columns #}
+        // Loop over columns
 
-        {#        var r = new Array(), j = -1;#}
-        {#        for (i=0;i<=posts.length-1;i++) {#}
-        {#            // Initiate row#}
-        {#            r[++j] = '<tr id="tr_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '">';#}
-        {##}
-        {#            // Column 1#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_1">';#}
-        {#            r[++j] = posts[i];#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // Column 2#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_2">';#}
-        {#            r[++j] = String(km[i]);#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // Column 3#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_3">';#}
-        {#            r[++j] = time[i];#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // Column 4#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_4">';#}
-        {#            r[++j] = String(speed[i]);#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // Column 5#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_5">';#}
-        {#            r[++j] = time_comp[i];#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // Column 6#}
-        {#            r[++j] = '<td id="td_row_';#}
-        {#            r[++j] = String(i);#}
-        {#            r[++j] = '_column_6">';#}
-        {#            r[++j] = String(speed_comp[i]);#}
-        {#            r[++j] = '</td>';#}
-        {##}
-        {#            // End row#}
-        {#            r[++j] = '</tr>';#}
-        {#        }#}
-        {#        $('#dodentocht_table tbody').html(r.join(''));#}
+                var r = new Array(), j = -1;
+                for (i=0;i<=posts.length-1;i++) {
+                    // Initiate row
+                    r[++j] = '<tr id="tr_';
+                    r[++j] = String(i+1);
+                    r[++j] = '">';
 
-        for (i=0;i<=posts.length-1;i++) {
-            $("#td_row_" + String(i+1) + "_column_1").html(posts[i]);
-            $("#td_row_" + String(i+1) + "_column_2").html(km[i]);
-            $("#td_row_" + String(i+1) + "_column_3").html(time[i]);
-            $("#td_row_" + String(i+1) + "_column_4").html(parseFloat(Math.round(speed[i] * 100) / 100).toFixed(1));
-            $("#td_row_" + String(i+1) + "_column_5").html(time_comp[i]);
-            $("#td_row_" + String(i+1) + "_column_6").html(parseFloat(Math.round(speed_comp[i] * 100) / 100).toFixed(1));
-        }
+                    // Column 1
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_1">';
+                    r[++j] = posts[i];
+                    r[++j] = '</td>';
 
+                    // Column 2
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_2">';
+                    r[++j] = String(km[i]);
+                    r[++j] = '</td>';
+
+                    // Column 3
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_3">';
+                    r[++j] = String(inrace[i]);
+                    r[++j] = '</td>';
+
+                    // Column 4
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_4">';
+                    r[++j] = String(opgaves[i]);
+                    r[++j] = '</td>';
+
+                    // Column 5
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_5">';
+                    r[++j] = time[i];
+                    r[++j] = '</td>';
+
+                    // Column 6
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_6">';
+                    r[++j] = String(parseFloat(Math.round(speed[i] * 100) / 100).toFixed(1));
+                    r[++j] = '</td>';
+
+                    // Column 7
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_7">';
+                    r[++j] = time_comp[i];
+                    r[++j] = '</td>';
+
+                    // Column 8
+                    r[++j] = '<td id="td_row_';
+                    r[++j] = String(i+1);
+                    r[++j] = '_column_8">';
+                    r[++j] = String(parseFloat(Math.round(speed_comp[i] * 100) / 100).toFixed(1));
+                    r[++j] = '</td>';
+
+                    // End row
+                    r[++j] = '</tr>';
+                }
+
+        // Add last row Totaal
+        r[++j] ='<tr><td id="td_table_totaal"><b>Totaal</b></td><td></td><td id="td_table_totaal_inrace"></td><td id="td_table_totaal_opgaves"></td><td id="td_table_totaal_tijd"></td><td id="td_table_totaal_snelheid"></td><td id="td_table_totaal_tijd_comp"></td><td id="td_table_totaal_snelheid_comp"></td></tr>';
+
+        $('#dodentocht_table tbody').html(r.join(''));
 
         // Fill footer of table (Totaal)
+        $('#td_table_totaal_inrace').html("<b>" + String(inrace[inrace.length-1])+ "</b>");
+
+        var opgaves_totaal = 0;
+            $.each(opgaves,function() {
+                opgaves_totaal += this;
+            });
+        $('#td_table_totaal_opgaves').html("<b>" + String(opgaves_totaal)+ "</b>");
+
         // Als deelnemer niet aangekomen, zet "-" in tabel bovenaan
         if (Math.round(names_selected_position[0]) > Math.round(participants[1]) ) {
             $('#td_table_totaal_tijd').html("<b>-</b>");
@@ -912,19 +943,10 @@ $(document).ready(function(){
         // First row, always to "-"
         $("#td_row_1_column_4").html("-");
         $("#td_row_1_column_6").html("-");
-
+        $("#td_row_1_column_8").html("-");
         // Next rows
         for (i = 2; i <= 16; i++) {
             // First name
-            td = "#td_row_" + String(i) + "_column_4";
-            if ($(td).html() == "0.0") {
-                $(td).html("-");
-                // Also make time column "-"
-                td = "#td_row_" + String(i) + "_column_3";
-                $(td).html("-");
-            }
-
-            // Second name
             td = "#td_row_" + String(i) + "_column_6";
             if ($(td).html() == "0.0") {
                 $(td).html("-");
@@ -933,7 +955,26 @@ $(document).ready(function(){
                 $(td).html("-");
             }
 
+            // Second name
+            td = "#td_row_" + String(i) + "_column_8";
+            if ($(td).html() == "0.0") {
+                $(td).html("-");
+                // Also make time column "-"
+                td = "#td_row_" + String(i) + "_column_7";
+                $(td).html("-");
+            }
 
+
+        }
+
+        // If opgaves = 0 ==> "-"
+        for (i = 2; i <= 16; i++) {
+            // First name
+            td = "#td_row_" + String(i) + "_column_4";
+            if ($(td).html() == "0") {
+                $(td).html("-");
+
+            }
         }
     }
 
@@ -985,12 +1026,17 @@ $(document).ready(function(){
 <div id="gauge_chart_wrapper" class="container"></div>
 <br>
 <div id="wrapper" class="container">
-    <div id="table_wrapper" class="left">
+
+    <div id="radar_chart_wrapper" class="left">
+        {#Radar Chart#}
+        <canvas id="radar_chart" width ="400" height="358"></canvas>
+    </div>
+    <div id="table_wrapper" class="center">
         <table cellspacing='0' id="dodentocht_table" class="tablesorter">
             {#            Make table headers#}
             <thead>
             <tr>
-                <th id ="th_posts_invisible" colspan="2" style="visibility: hidden; background-color: transparent; opacity: 0;"></th>
+                <th id ="th_posts_invisible" colspan="4" style="visibility: hidden; background-color: transparent; opacity: 0;"></th>
                 <th id ="th_your_name" class= "your_name" colspan="2"></th>
                 <th id ="th_comp" class= "comp_name" colspan="2"></th>
 
@@ -998,6 +1044,8 @@ $(document).ready(function(){
             <tr>
                 <th id ="th_posts" class= "neutral">Post</th>
                 <th id ="th_km" class= "neutral">Km</th>
+                <th id ="th_inrace" class= "neutral">In race</th>
+                <th id ="th_opgaves" class= "neutral">Opgaves</th>
                 <th id ="th_time" class= "your_name">Tijd</th>
                 <th id ="th_speed" class= "your_name">Snelheid</th>
                 <th id ="th_time" class= "comp_name">Tijd</th>
@@ -1006,161 +1054,9 @@ $(document).ready(function(){
             </thead>
             {#            Fill rest of table with data#}
             <tbody>
-            <tr id="tr_1">
-                <td id="td_row_1_column_1"></td>
-                <td id="td_row_1_column_2"></td>
-                <td id="td_row_1_column_3"></td>
-                <td id="td_row_1_column_4"></td>
-                <td id="td_row_1_column_5"></td>
-                <td id="td_row_1_column_6"></td>
-            </tr>
 
-            <tr id="tr_2">
-                <td id="td_row_2_column_1"></td>
-                <td id="td_row_2_column_2"></td>
-                <td id="td_row_2_column_3"></td>
-                <td id="td_row_2_column_4"></td>
-                <td id="td_row_2_column_5"></td>
-                <td id="td_row_2_column_6"></td>
-            </tr>
-
-            <tr id="tr_3">
-                <td id="td_row_3_column_1"></td>
-                <td id="td_row_3_column_2"></td>
-                <td id="td_row_3_column_3"></td>
-                <td id="td_row_3_column_4"></td>
-                <td id="td_row_3_column_5"></td>
-                <td id="td_row_3_column_6"></td>
-            </tr>
-
-            <tr id="tr_4">
-                <td id="td_row_4_column_1"></td>
-                <td id="td_row_4_column_2"></td>
-                <td id="td_row_4_column_3"></td>
-                <td id="td_row_4_column_4"></td>
-                <td id="td_row_4_column_5"></td>
-                <td id="td_row_4_column_6"></td>
-            </tr>
-
-            <tr id="tr_5">
-                <td id="td_row_5_column_1"></td>
-                <td id="td_row_5_column_2"></td>
-                <td id="td_row_5_column_3"></td>
-                <td id="td_row_5_column_4"></td>
-                <td id="td_row_5_column_5"></td>
-                <td id="td_row_5_column_6"></td>
-            </tr>
-
-            <tr id="tr_6">
-                <td id="td_row_6_column_1"></td>
-                <td id="td_row_6_column_2"></td>
-                <td id="td_row_6_column_3"></td>
-                <td id="td_row_6_column_4"></td>
-                <td id="td_row_6_column_5"></td>
-                <td id="td_row_6_column_6"></td>
-            </tr>
-
-            <tr id="tr_7">
-                <td id="td_row_7_column_1"></td>
-                <td id="td_row_7_column_2"></td>
-                <td id="td_row_7_column_3"></td>
-                <td id="td_row_7_column_4"></td>
-                <td id="td_row_7_column_5"></td>
-                <td id="td_row_7_column_6"></td>
-            </tr>
-
-            <tr id="tr_8">
-                <td id="td_row_8_column_1"></td>
-                <td id="td_row_8_column_2"></td>
-                <td id="td_row_8_column_3"></td>
-                <td id="td_row_8_column_4"></td>
-                <td id="td_row_8_column_5"></td>
-                <td id="td_row_8_column_6"></td>
-            </tr>
-
-            <tr id="tr_9">
-                <td id="td_row_9_column_1"></td>
-                <td id="td_row_9_column_2"></td>
-                <td id="td_row_9_column_3"></td>
-                <td id="td_row_9_column_4"></td>
-                <td id="td_row_9_column_5"></td>
-                <td id="td_row_9_column_6"></td>
-            </tr>
-
-            <tr id="tr_10">
-                <td id="td_row_10_column_1"></td>
-                <td id="td_row_10_column_2"></td>
-                <td id="td_row_10_column_3"></td>
-                <td id="td_row_10_column_4"></td>
-                <td id="td_row_10_column_5"></td>
-                <td id="td_row_10_column_6"></td>
-            </tr>
-
-            <tr id="tr_11">
-                <td id="td_row_11_column_1"></td>
-                <td id="td_row_11_column_2"></td>
-                <td id="td_row_11_column_3"></td>
-                <td id="td_row_11_column_4"></td>
-                <td id="td_row_11_column_5"></td>
-                <td id="td_row_11_column_6"></td>
-            </tr>
-
-            <tr id="tr_12">
-                <td id="td_row_12_column_1"></td>
-                <td id="td_row_12_column_2"></td>
-                <td id="td_row_12_column_3"></td>
-                <td id="td_row_12_column_4"></td>
-                <td id="td_row_12_column_5"></td>
-                <td id="td_row_12_column_6"></td>
-            </tr>
-            <tr id="tr_13">
-                <td id="td_row_13_column_1"></td>
-                <td id="td_row_13_column_2"></td>
-                <td id="td_row_13_column_3"></td>
-                <td id="td_row_13_column_4"></td>
-                <td id="td_row_13_column_5"></td>
-                <td id="td_row_13_column_6"></td>
-            </tr>
-            <tr id="tr_14">
-                <td id="td_row_14_column_1"></td>
-                <td id="td_row_14_column_2"></td>
-                <td id="td_row_14_column_3"></td>
-                <td id="td_row_14_column_4"></td>
-                <td id="td_row_14_column_5"></td>
-                <td id="td_row_14_column_6"></td>
-            </tr>
-            <tr id="tr_15">
-                <td id="td_row_15_column_1"></td>
-                <td id="td_row_15_column_2"></td>
-                <td id="td_row_15_column_3"></td>
-                <td id="td_row_15_column_4"></td>
-                <td id="td_row_15_column_5"></td>
-                <td id="td_row_15_column_6"></td>
-            </tr>
-            <tr id="tr_16">
-                <td id="td_row_16_column_1"></td>
-                <td id="td_row_16_column_2"></td>
-                <td id="td_row_16_column_3"></td>
-                <td id="td_row_16_column_4"></td>
-                <td id="td_row_16_column_5"></td>
-                <td id="td_row_16_column_6"></td>
-            </tr>
-
-            <tr>
-                <td id="td_table_totaal"><b>Totaal</b></td>
-                <td></td>
-                <td id="td_table_totaal_tijd"></td>
-                <td id="td_table_totaal_snelheid"></td>
-                <td id="td_table_totaal_tijd_comp"></td>
-                <td id="td_table_totaal_snelheid_comp"></td>
-
-            </tr>
             </tbody>
         </table>
-    </div>
-    <div id="radar_chart_wrapper" class="center">
-        {#Radar Chart#}
-        <canvas id="radar_chart" width ="400" height="358"></canvas>
     </div>
     <div id="line_chart_wrapper" class="right">
         {#Line Chart#}

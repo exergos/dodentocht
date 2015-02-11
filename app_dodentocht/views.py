@@ -256,6 +256,9 @@ def dodentocht_query(form,ip_address, compare_string):
         your_name_db_snelheid_comp = dodentocht_snelheid_avg.objects.all()
         your_name_db_km = dodentocht_totaal_avg.objects.filter(Data="Km")
         your_name_db_participants = dodentocht_totaal_avg.objects.filter(Data="In race")
+        your_name_db_opgaves = dodentocht_totaal_avg.objects.filter(Data="Opgaves per post")
+        your_name_db_inrace = dodentocht_totaal_avg.objects.filter(Data="In race")
+
 
         import pytz
         # Create localization
@@ -281,6 +284,8 @@ def dodentocht_query(form,ip_address, compare_string):
         time = list()
         speed = list()
         speed_comp = list()
+        opgaves = list()
+        inrace = list()
         data_keys = list(your_name_db_tijd.values()[0])
         for key in data_keys:
             if type(your_name_db_tijd.values()[0][key]) is datetime.datetime:
@@ -289,9 +294,11 @@ def dodentocht_query(form,ip_address, compare_string):
                 time.append(your_name_db_tijd.values()[0][key])
                 speed.append(round(your_name_db_snelheid.values()[0][key],1))
                 speed_comp.append(round(your_name_db_snelheid_comp.values()[0][key],1))
+                opgaves.append(int(your_name_db_opgaves.values()[0][key]))
+                inrace.append(int(your_name_db_inrace.values()[0][key]))
 
         # Sort based on datetimes
-        time, speed, speed_comp, posts, km = (list(t) for t in zip(*sorted(zip(time, speed, speed_comp, posts, km))))
+        time, speed, speed_comp, posts, km, opgaves, inrace = (list(t) for t in zip(*sorted(zip(time, speed, speed_comp, posts, km, opgaves, inrace))))
 
         # time_total & time_comp_total
         import math
@@ -353,11 +360,13 @@ def dodentocht_query(form,ip_address, compare_string):
         speed_total = json.dumps(speed_total, cls=DecimalEncoder)
         time_comp_total = json.dumps(time_comp_total)
         speed_comp_total = json.dumps(speed_comp_total, cls=DecimalEncoder)
+        opgaves = json.dumps(opgaves, cls=DecimalEncoder)
+        inrace = json.dumps(inrace, cls=DecimalEncoder)
 
         context_dict = {'names' : names, "names_selected" : names_selected, "names_selected_position" : names_selected_position,
                         "participants" : participants, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp,
                         'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'time' : time, "time_comp" : time_comp, "km" : km,
-                        "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total}
+                        "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total, "opgaves" : opgaves, "inrace" : inrace}
 
     # If compare is not average, but another person
     else:
@@ -376,6 +385,8 @@ def dodentocht_query(form,ip_address, compare_string):
             your_name_db_snelheid = dodentocht_snelheid.objects.filter(Naam=your_name)
             your_name_db_km = dodentocht_totaal_avg.objects.filter(Data="Km")
             your_name_db_participants = dodentocht_totaal_avg.objects.filter(Data="In race")
+            your_name_db_opgaves = dodentocht_totaal_avg.objects.filter(Data="Opgaves per post")
+            your_name_db_inrace = dodentocht_totaal_avg.objects.filter(Data="In race")
 
             comp_name_db_tijd = dodentocht_tijd.objects.filter(Naam=comp_name)
             comp_name_db_snelheid = dodentocht_snelheid.objects.filter(Naam=comp_name)
@@ -405,6 +416,8 @@ def dodentocht_query(form,ip_address, compare_string):
             time_comp = list()
             speed = list()
             speed_comp = list()
+            opgaves = list()
+            inrace = list()
             data_keys = list(your_name_db_tijd.values()[0])
             for key in data_keys:
                 if type(your_name_db_tijd.values()[0][key]) is datetime.datetime:
@@ -414,9 +427,11 @@ def dodentocht_query(form,ip_address, compare_string):
                     time_comp.append(comp_name_db_tijd.values()[0][key])
                     speed.append(round(your_name_db_snelheid.values()[0][key],1))
                     speed_comp.append(round(comp_name_db_snelheid.values()[0][key],1))
+                    opgaves.append(int(your_name_db_opgaves.values()[0][key]))
+                    inrace.append(int(your_name_db_inrace.values()[0][key]))
 
             # Sort based on datetimes
-            time, time_comp, speed, speed_comp, posts, km = (list(t) for t in zip(*sorted(zip(time, time_comp, speed, speed_comp, posts, km))))
+            time, time_comp, speed, speed_comp, posts, km, opgaves, inrace = (list(t) for t in zip(*sorted(zip(time, time_comp, speed, speed_comp, posts, km, opgaves, inrace))))
 
             # time_total & time_comp_total
             import math
@@ -479,9 +494,12 @@ def dodentocht_query(form,ip_address, compare_string):
             speed_total = json.dumps(speed_total, cls=DecimalEncoder)
             time_comp_total = json.dumps(time_comp_total)
             speed_comp_total = json.dumps(speed_comp_total, cls=DecimalEncoder)
+            opgaves = json.dumps(opgaves)
+            inrace = json.dumps(inrace)
 
             context_dict = {'names' : names, "names_selected" : names_selected, "names_selected_position" : names_selected_position,
                             "participants" : participants, "posts" : posts, "speed" : speed, "speed_comp" : speed_comp,
                             'time_graph' : time_graph, 'time_graph_comp' : time_graph_comp, 'time' : time, "time_comp" : time_comp, "km" : km,
-                            "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total}
+                            "time_total" : time_total, "time_comp_total" : time_comp_total, "speed_total" : speed_total, "speed_comp_total" : speed_comp_total,
+                            "opgaves" : opgaves, "inrace" : inrace}
     return context_dict

@@ -7,6 +7,8 @@
 <!DOCTYPE html>
 <html>
 <head lang="en">
+    {#favicon.ico#}
+    <link rel="shortcut icon" href="{% static "images/favicon.ico" %}" />
     {#    This makes sure css hover function works in IE#}
     <meta http-equiv="X-UA-Compatible" content="IE=9"/>
     {#This import jQuery#}
@@ -68,8 +70,8 @@
             $('#input_form').submit(function(){
                 // make input name url string
                 url_string = $("#id_your_name").val().replace(/ /g, '-');
-                form_action = "/" + url_string + "/";
-
+{#                form_action = "/" + url_string + "/";#}
+                form_action = "/" + "result" + "/";
                 // set form action url
                 $('#input_form').attr('action', form_action);
 
