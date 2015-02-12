@@ -14,7 +14,6 @@ from app_dodentocht.models import dodentocht_tijd
 from app_dodentocht.models import dodentocht_snelheid
 from app_dodentocht.models import dodentocht_snelheid_avg
 from app_dodentocht.models import dodentocht_totaal_avg
-from app_dodentocht.models import requests
 
 # To make list of lists that are not copies of each other
 from itertools import repeat
@@ -78,74 +77,16 @@ def results(request):
     # create a form instance and populate it with data from the request:
     form = forms.NameForm(request.POST)
 
-    # # check whether it's valid:
-    # if request.is_ajax():
-    #     #if  'Change comp' in request.POST:
-    #     # Save it to requests
-    #     ##########################################
-    #     # Store requested participant in database
-    #     # Create model to write to database:
-    #     get_status = requests() #imported class from model
-    #     # 1. IP Address
-    #     x_forwarded_for = request.META.get('REMOTE_ADDR')
-    #     if x_forwarded_for:
-    #         ip_address = x_forwarded_for.split(',')[-1].strip()
-    #     else:
-    #         ip_address = request.META.get('REMOTE_ADDR')
-    #     get_status.ip_address= ip_address
-    #
-    #     # 2. Date
-    #     # Create localization
-    #     brussels = pytz.timezone("Europe/Brussels")
-    #     get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
-    #
-    #     # 3. Requested name
-    #     comp_name = form['your_name']
-    #     get_status.name_requested = comp_name
-    #
-    #     # 4. Comp or not?
-    #     comp = 1
-    #     get_status.comp = comp
-    #
-    #     # Save
-    #     get_status.save()
-    #     ###########################################
-    #
-    #     # Now compare with new request (instead of average)
-    #     context_dict = dodentocht_query(form,ip_address,"compare")
     if form.is_valid():
         if "yourname" in request.POST:
-            ##########################################
-            # Store requested participant in database
-            # Create model to write to database:
-            get_status = requests() #imported class from model
-            # 1. IP Address
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            if x_forwarded_for:
-                ip_address = x_forwarded_for.split(',')[-1].strip()
-            else:
-                ip_address = request.META.get('REMOTE_ADDR')
-            get_status.ip_address= ip_address
-
-            # 2. Date
-            # Create localization
-            brussels = pytz.timezone("Europe/Brussels")
-            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
-
-            # 3. Requested name
             your_name = form.cleaned_data['your_name']
-            get_status.name_requested = your_name
-
-            # 4. Comp or not?
-            comp = 0
-            get_status.comp = comp
-
-            # Save
-            get_status.save()
-            ###########################################
+            # Sessions
+            # Set your_name and comp
+            request.session['your_name'] = your_name
+            request.session['comp_name'] = "Gemiddeld"
 
             # Process request
-            context_dict = dodentocht_query(form,ip_address,'average')
+            context_dict = dodentocht_query(form,request,'average')
 
             # Get names from database to use autocomplete:
             your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
@@ -166,81 +107,29 @@ def results(request):
 
             return render(request, 'results.html', context_dict)
         if request.POST.get('form_name') == "form_compare":
-            #if  'Change comp' in request.POST:
-            # Save it to requests
-            ##########################################
-            # Store requested participant in database
-            # Create model to write to database:
-            get_status = requests() #imported class from model
-            # 1. IP Address
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            if x_forwarded_for:
-                ip_address = x_forwarded_for.split(',')[-1].strip()
-            else:
-                ip_address = request.META.get('REMOTE_ADDR')
-            get_status.ip_address= ip_address
-
-            # 2. Date
-            # Create localization
-            brussels = pytz.timezone("Europe/Brussels")
-            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
-
-            # 3. Requested name
             comp_name = form.cleaned_data['your_name']
-            get_status.name_requested = comp_name
-
-            # 4. Comp or not?
-            comp = 1
-            get_status.comp = comp
-
-            # Save
-            get_status.save()
-            ###########################################
+            # Sessions
+            # Set your_name and comp
+            request.session['comp_name'] = comp_name
 
             # Now compare with new request (instead of average)
-            context_dict = dodentocht_query(form,ip_address,"compare")
+            context_dict = dodentocht_query(form,request,"compare")
         if request.POST.get('form_name') == "form_your_name":
-            # if 'Change yourname' in request.POST:
-            # Save it to requests
-            ##########################################
-            # Store requested participant in database
-            # Create model to write to database:
-            get_status = requests() #imported class from model
-            # 1. IP Address
-            x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-            if x_forwarded_for:
-                ip_address = x_forwarded_for.split(',')[-1].strip()
-            else:
-                ip_address = request.META.get('REMOTE_ADDR')
-            get_status.ip_address= ip_address
-
-            # 2. Date
-            # Create localization
-            brussels = pytz.timezone("Europe/Brussels")
-            get_status.pub_date = brussels.localize(datetime.datetime.today()) #import datetime
-
-            # 3. Requested name
-            comp_name = form.cleaned_data['your_name']
-            get_status.name_requested = comp_name
-
-            # 4. Comp or not?
-            comp = 0
-            get_status.comp = comp
-
-            # Save
-            get_status.save()
-            ###########################################
+            your_name = form.cleaned_data['your_name']
+            # Sessions
+            # Set your_name and comp
+            request.session['your_name'] = your_name
 
             # Now compare with new request
-            try:
-                comp_name = requests.objects.filter(comp__exact=1).latest("pub_date").name_requested
-                context_dict = dodentocht_query(form,ip_address,"compare")
-            except requests.DoesNotExist:
-                context_dict = dodentocht_query(form,ip_address,"average")
+
+            if request.session['comp_name'] == "Gemiddeld":
+                context_dict = dodentocht_query(form,request,"average")
+            else:
+                context_dict = dodentocht_query(form,request,"compare")
 
     return HttpResponse(json.dumps(context_dict), content_type = "application/json")
 
-def dodentocht_query(form,ip_address, compare_string):
+def dodentocht_query(form,request, compare_string):
     if compare_string == 'average':
         # process the data in form.cleaned_data as required
         your_name = form.cleaned_data['your_name']
@@ -372,9 +261,11 @@ def dodentocht_query(form,ip_address, compare_string):
     else:
         if compare_string == "compare":
             # Retain data from initially requested person (=latest by that IP Address)
-            your_name = requests.objects.filter(comp__exact=0).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
-            comp_name = requests.objects.filter(comp__exact=1).filter(ip_address__exact=ip_address).latest("pub_date").name_requested
+            # your_name = requests.objects.filter(ip_address__exact=ip_address).latest("pub_date").name_requested
+            # comp_name = requests.objects.filter(ip_address__exact=ip_address).latest("pub_date").comp_requested
 
+            your_name = request.session["your_name"]
+            comp_name = request.session["comp_name"]
             # Lookup in database
             your_name_db_namen = dodentocht_tijd.objects.all().values_list("Naam")
             names = list()

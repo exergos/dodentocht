@@ -81,10 +81,3 @@ class dodentocht_totaal_avg(models.Model):
     Sint_Amands = models.DecimalField(max_digits= 30, decimal_places= 5,default=0)
     Branst = models.DecimalField(max_digits= 30, decimal_places= 5,default=0)
     Aankomst = models.DecimalField(max_digits= 30, decimal_places= 5,default=0)
-
-# To store requests (only names)
-class requests(models.Model):
-    ip_address = models.IPAddressField()
-    pub_date = models.DateTimeField()
-    name_requested = models.TextField(default='')
-    comp = models.IntegerField(default=0)

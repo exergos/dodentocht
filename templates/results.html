@@ -222,6 +222,9 @@ $(document).ready(function(){
                 opgaves = $.parseJSON(result["opgaves"]);
                 inrace = $.parseJSON(result["inrace"]);
 
+                 // Set title
+                document.title = names_selected[0];
+
                 createRadarchart(colors,speed,speed_comp,posts);
                 createLinechart(colors,time_graph,time_graph_comp);
 
