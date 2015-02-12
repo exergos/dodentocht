@@ -394,31 +394,18 @@ $(document).ready(function(){
                     yAxis: {
                         min: 1,
                         max: participants[0],
-
-                        {#                        tickInterval: 1,#}
-                        {#                        tickPositioner: function () {#}
-                        {#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
-                        {##}
-                        {#                            return positions;#}
-                        {#                        },#}
-                        {#                        startOnTick: true,#}
-                        {#                        tickWidth: 0,#}
-                        {#                        tickPosition: 'inside',#}
-                        {#                        tickLength: 0,#}
-                        {#                        tickColor: '#fff',#}
-                        {#                        labels: {#}
-                        {#                            step: 1,#}
-                        {#                            distance: -30,#}
-                        {#                            rotation: 0,#}
-                        {#                            formatter: function() {#}
-                        {##}
-                        {#                                return -this.value + participants[0] + 1 ;#}
-                        {#                            },#}
-                        {#                            style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}#}
-                        {##}
-                        {#                        },#}
-
-
+                                                tickPositioner: function () {
+{#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
+                                var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
+                            return positions;
+                        },
+                        labels: {
+                            formatter: function() {
+                                     label_format = String((-this.value + participants[0]+1)/1000) + "k";
+                                return label_format ;
+                            },
+                            style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}
+                        },
                         title: {
                             text: ''
                         },
@@ -457,7 +444,7 @@ $(document).ready(function(){
 
                         },
                         tooltip: {
-                            pointFormat: "<b>" + names_selected[0] + "</b> was <b>" + names_selected_position[0] + "e</b> op " + participants[0] + "deelnemers<br>waarvan er " + participants[1] +  " zijn aangekomen"
+                            pointFormat: "<b>" + names_selected[0] + ":</b><b> " + names_selected_position[0] + "</b>/" + participants[0]
                         }
                     }]
                 },
@@ -504,28 +491,28 @@ $(document).ready(function(){
                         min: 1,
                         max: participants[0],
 
-                        {#                        tickInterval: 1,#}
-                        {#                        tickPositioner: function () {#}
-                        {#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
-                        {##}
-                        {#                            return positions;#}
-                        {#                        },#}
-                        {#                        startOnTick: true,#}
-                        {#                        tickWidth: 0,#}
-                        {#                        tickPosition: 'inside',#}
-                        {#                        tickLength: 0,#}
-                        {#                        tickColor: '#fff',#}
-                        {#                        labels: {#}
-                        {#                            step: 1,#}
-                        {#                            distance: -30,#}
-                        {#                            rotation: 0,#}
-                        {#                            formatter: function() {#}
-                        {##}
-                        {#                                return -this.value + participants[0] + 1 ;#}
-                        {#                            },#}
-                        {#                            style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}#}
-                        {##}
-                        {#                        },#}
+{#                        tickInterval: 1,#}
+                        tickPositioner: function () {
+{#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
+                                var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
+                            return positions;
+                        },
+{#                        startOnTick: true,#}
+{#                        tickWidth: 0,#}
+{#                        tickPosition: 'inside',#}
+{#                        tickLength: 0,#}
+{#                        tickColor: '#fff',#}
+                        labels: {
+{#                            step: 1,#}
+{#                            distance: -30,#}
+{#                            rotation: 0,#}
+                            formatter: function() {
+                                     label_format = String((-this.value + participants[0]+1)/1000) + "k";
+                                return label_format ;
+                            },
+                            style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}
+
+                        },
 
 
                         title: {
@@ -566,8 +553,7 @@ $(document).ready(function(){
 
                         },
                         tooltip: {
-                            pointFormat: "<b>" + names_selected[0] + "</b> was <b>" + names_selected_position[0] + "e</b> op " + participants[0] + "deelnemers<br>waarvan er " + participants[1] +  " zijn aangekomen"
-                        }
+                            pointFormat: "<b>" + names_selected[0] + ":</b><b> " + names_selected_position[0] + "</b>/" + participants[0]   }
                     },
                         {
                             name: 'Compare',
@@ -594,8 +580,7 @@ $(document).ready(function(){
                                 style: {"fontFamily": "monospace, monospace","fontWeight":"bold", "fontSize":"14px"}
                             },
                             tooltip: {
-                                pointFormat: "<b>" + names_selected[1] + "</b> was <b>" + names_selected_position[1] +  "e</b> op " + participants[0] + "deelnemers<br>waarvan er " + participants[1] +  " zijn aangekomen"
-                            }
+                                pointFormat: "<b>" + names_selected[1] + ":</b><b> " + names_selected_position[1] + "</b>/" + participants[0]  }
                         }]
                 },
 
@@ -685,8 +670,8 @@ $(document).ready(function(){
 <script>
     function createLinechart(colors,time_graph,time_graph_comp) {
 
-{#        var time_graph = time_graph;#}
-{#        var time_graph_comp = time_graph_comp;#}
+        {#        var time_graph = time_graph;#}
+        {#        var time_graph_comp = time_graph_comp;#}
         var time_graph_ms = [];
         var time_graph_comp_ms = [];
         {#            Count how many posts where not attained by walker#}
@@ -701,11 +686,11 @@ $(document).ready(function(){
             time_graph_ms[i] = moment(time_graph[i]).unix();
             time_graph_comp_ms[i] = moment(time_graph_comp[i]).unix();
             if (time_graph_ms[i] >= 1420066800) {
-{#                time_graph_ms[i] = false;#}
+                {#                time_graph_ms[i] = false;#}
                 count_2015 = count_2015 + 1;
             }
             if (time_graph_comp_ms[i] >= 1420066800) {
-{#                time_graph_comp_ms[i] = false;#}
+                {#                time_graph_comp_ms[i] = false;#}
                 count_2015_comp = count_2015_comp + 1;
             }
         }
@@ -838,72 +823,72 @@ $(document).ready(function(){
         // Create 16 rows (dodentocht posts)
         // Loop over columns
 
-                var r = new Array(), j = -1;
-                for (i=0;i<=posts.length-1;i++) {
-                    // Initiate row
-                    r[++j] = '<tr id="tr_';
-                    r[++j] = String(i+1);
-                    r[++j] = '">';
+        var r = new Array(), j = -1;
+        for (i=0;i<=posts.length-1;i++) {
+            // Initiate row
+            r[++j] = '<tr id="tr_';
+            r[++j] = String(i+1);
+            r[++j] = '">';
 
-                    // Column 1
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_1">';
-                    r[++j] = posts[i];
-                    r[++j] = '</td>';
+            // Column 1
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_1">';
+            r[++j] = posts[i];
+            r[++j] = '</td>';
 
-                    // Column 2
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_2">';
-                    r[++j] = String(km[i]);
-                    r[++j] = '</td>';
+            // Column 2
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_2">';
+            r[++j] = String(km[i]);
+            r[++j] = '</td>';
 
-                    // Column 3
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_3">';
-                    r[++j] = String(inrace[i]);
-                    r[++j] = '</td>';
+            // Column 3
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_3">';
+            r[++j] = String(inrace[i]);
+            r[++j] = '</td>';
 
-                    // Column 4
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_4">';
-                    r[++j] = String(opgaves[i]);
-                    r[++j] = '</td>';
+            // Column 4
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_4">';
+            r[++j] = String(opgaves[i]);
+            r[++j] = '</td>';
 
-                    // Column 5
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_5">';
-                    r[++j] = time[i];
-                    r[++j] = '</td>';
+            // Column 5
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_5">';
+            r[++j] = time[i];
+            r[++j] = '</td>';
 
-                    // Column 6
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_6">';
-                    r[++j] = String(parseFloat(Math.round(speed[i] * 100) / 100).toFixed(1));
-                    r[++j] = '</td>';
+            // Column 6
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_6">';
+            r[++j] = String(parseFloat(Math.round(speed[i] * 100) / 100).toFixed(1));
+            r[++j] = '</td>';
 
-                    // Column 7
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_7">';
-                    r[++j] = time_comp[i];
-                    r[++j] = '</td>';
+            // Column 7
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_7">';
+            r[++j] = time_comp[i];
+            r[++j] = '</td>';
 
-                    // Column 8
-                    r[++j] = '<td id="td_row_';
-                    r[++j] = String(i+1);
-                    r[++j] = '_column_8">';
-                    r[++j] = String(parseFloat(Math.round(speed_comp[i] * 100) / 100).toFixed(1));
-                    r[++j] = '</td>';
+            // Column 8
+            r[++j] = '<td id="td_row_';
+            r[++j] = String(i+1);
+            r[++j] = '_column_8">';
+            r[++j] = String(parseFloat(Math.round(speed_comp[i] * 100) / 100).toFixed(1));
+            r[++j] = '</td>';
 
-                    // End row
-                    r[++j] = '</tr>';
-                }
+            // End row
+            r[++j] = '</tr>';
+        }
 
         // Add last row Totaal
         r[++j] ='<tr><td id="td_table_totaal"><b>Totaal</b></td><td></td><td id="td_table_totaal_inrace"></td><td id="td_table_totaal_opgaves"></td><td id="td_table_totaal_tijd"></td><td id="td_table_totaal_snelheid"></td><td id="td_table_totaal_tijd_comp"></td><td id="td_table_totaal_snelheid_comp"></td></tr>';
@@ -914,9 +899,9 @@ $(document).ready(function(){
         $('#td_table_totaal_inrace').html("<b>" + String(inrace[inrace.length-1])+ "</b>");
 
         var opgaves_totaal = 0;
-            $.each(opgaves,function() {
-                opgaves_totaal += this;
-            });
+        $.each(opgaves,function() {
+            opgaves_totaal += this;
+        });
         $('#td_table_totaal_opgaves').html("<b>" + String(opgaves_totaal)+ "</b>");
 
         // Als deelnemer niet aangekomen, zet "-" in tabel bovenaan

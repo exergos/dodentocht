@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.7/ref/settings/
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 if DEBUG:
     BASE_DIR = os.path.dirname(os.path.dirname(__file__))
@@ -37,35 +37,35 @@ if DEBUG:
         ]
     # Database
     # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
-    #
-    # DATABASES = {
-    #      'default': {
-    #          'NAME': 'dodentocht',
-    #          'ENGINE': 'mysql.connector.django',
-    #          'USER': 'root',
-    #          'PASSWORD': '',
-    #          'HOST': '127.0.0.1',
-    #          'OPTIONS': {
-    #              'autocommit': True,
-    #              },
-    #          }
-    # }
 
     DATABASES = {
-        'default': {
-            'NAME': 'heroku_a8c4b0cefde9e4f',
-            'ENGINE': 'mysql.connector.django',
-            'USER': 'b21ac369402104',
-            'PASSWORD': '71a611ed',
-            'HOST': 'us-cdbr-iron-east-01.cleardb.net',
-            # 'PORT' : '3306',
-            'OPTIONS': {
-                'autocommit': True,
-                'buffered': True,
-                'connect_timeout': 200000,
-                },
-            }
+         'default': {
+             'NAME': 'dodentocht',
+             'ENGINE': 'mysql.connector.django',
+             'USER': 'root',
+             'PASSWORD': '',
+             'HOST': '127.0.0.1',
+             'OPTIONS': {
+                 'autocommit': True,
+                 },
+             }
     }
+    #
+    # DATABASES = {
+    #     'default': {
+    #         'NAME': 'heroku_a8c4b0cefde9e4f',
+    #         'ENGINE': 'mysql.connector.django',
+    #         'USER': 'b21ac369402104',
+    #         'PASSWORD': '71a611ed',
+    #         'HOST': 'us-cdbr-iron-east-01.cleardb.net',
+    #         # 'PORT' : '3306',
+    #         'OPTIONS': {
+    #             'autocommit': True,
+    #             'buffered': True,
+    #             'connect_timeout': 200000,
+    #             },
+    #         }
+    # }
 
     STATICFILES_FINDERS = (
         'compressor.finders.CompressorFinder',
