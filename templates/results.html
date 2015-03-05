@@ -11,9 +11,8 @@
 <html>
 <head lang="en">
 {#favicon.ico#}
-<link rel="shortcut icon" href="{% static "images/favicon.ico" %}" />
-{#    This makes sure css hover function works in IE#}
-<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+{#<link rel="shortcut icon" href="{% static "images/favicon.ico" %}" />#}
+<link rel="shortcut icon" href="http://www.iconj.com/ico/z/c/zcqnoavjdh.ico" type="image/x-icon" />
 {#This import jQuery#}
 <script src="{% static "js/jQuery/jquery-1.11.1.min.js" %}"></script>
 {#This import everything related to jQuery-UI (autocomplete and others)#}
@@ -222,7 +221,7 @@ $(document).ready(function(){
                 opgaves = $.parseJSON(result["opgaves"]);
                 inrace = $.parseJSON(result["inrace"]);
 
-                 // Set title
+                // Set title
                 document.title = names_selected[0];
 
                 createRadarchart(colors,speed,speed_comp,posts);
@@ -397,14 +396,14 @@ $(document).ready(function(){
                     yAxis: {
                         min: 1,
                         max: participants[0],
-                                                tickPositioner: function () {
-{#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
-                                var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
+                        tickPositioner: function () {
+                            {#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
+                            var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
                             return positions;
                         },
                         labels: {
                             formatter: function() {
-                                     label_format = String((-this.value + participants[0]+1)/1000) + "k";
+                                label_format = String((-this.value + participants[0]+1)/1000) + "k";
                                 return label_format ;
                             },
                             style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}
@@ -494,23 +493,23 @@ $(document).ready(function(){
                         min: 1,
                         max: participants[0],
 
-{#                        tickInterval: 1,#}
+                        {#                        tickInterval: 1,#}
                         tickPositioner: function () {
-{#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
-                                var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
+                            {#                            var positions = [1,participants[0]-participants[1]+1,participants[0]];#}
+                            var positions = [participants[0]-2000+1,participants[0]-4000+1,participants[0]-6000+1,participants[0]-8000+1,participants[0]-10000+1];
                             return positions;
                         },
-{#                        startOnTick: true,#}
-{#                        tickWidth: 0,#}
-{#                        tickPosition: 'inside',#}
-{#                        tickLength: 0,#}
-{#                        tickColor: '#fff',#}
+                        {#                        startOnTick: true,#}
+                        {#                        tickWidth: 0,#}
+                        {#                        tickPosition: 'inside',#}
+                        {#                        tickLength: 0,#}
+                        {#                        tickColor: '#fff',#}
                         labels: {
-{#                            step: 1,#}
-{#                            distance: -30,#}
-{#                            rotation: 0,#}
+                            {#                            step: 1,#}
+                            {#                            distance: -30,#}
+                            {#                            rotation: 0,#}
                             formatter: function() {
-                                     label_format = String((-this.value + participants[0]+1)/1000) + "k";
+                                label_format = String((-this.value + participants[0]+1)/1000) + "k";
                                 return label_format ;
                             },
                             style: {"color":"#000","fontFamily": "monospace, monospace","fontWeight":"normal","fontSize":"12px"}
@@ -811,6 +810,21 @@ $(document).ready(function(){
         {#        // Centralize table vertically#}
         {#        var margin_top = ($(window).height() - $("#wrapper").height())/2 - $("#header_wrapper").height() - $("#header_table").height();#}
         {#        $('#wrapper').css('margin-top', margin_top);#}
+
+{#        // Set radar and line chart width as 20pc of window width#}
+{#        height_width_chart = 400/358;#}
+{#        $("#radar_chart").width(0.2*$(window).width());#}
+{#        $("#line_chart").width(0.2*$(window).width());#}
+{#        $("#radar_chart").height(1/height_width_chart*$("#radar_chart").width());#}
+{#        $("#line_chart").height(1/height_width_chart*$("#line_chart").width());#}
+{##}
+{##}
+{#        // Set margin left and right of table wrapper (to support different resolutions)#}
+{#        margin_pc = ($(window).width() - $("#table_wrapper").width() - $("#line_chart_wrapper").width() - $("#radar_chart_wrapper").width())/(2*$(window).width());#}
+{#        alert($(window).width() - $("#table_wrapper").width() - $("#line_chart_wrapper").width() - $("#radar_chart_wrapper").width())#}
+{#        alert(margin_pc)#}
+{#        $("#table_wrapper").css("margin-left",String(margin_pc) + "pc");#}
+{#        $("#table_wrapper").css("margin-right",String(margin_pc) + "pc");#}
 
     }
 
